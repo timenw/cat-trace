@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme -->
+    <style name="Theme.CatTrace" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/navigation_bar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!-- Splash screen theme (shown at cold start before Compose loads) -->
+    <style name="Theme.CatTrace.Splash" parent="Theme.CatTrace">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
+</resources>
