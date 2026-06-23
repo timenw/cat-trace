@@ -1,43 +1,63 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../domain/enums/health_status.dart';
 
 /// 健康观察组件
 class HealthObservations extends StatefulWidget {
-  final Function(Map<String, dynamic> data) onChanged;
+  final HealthStatus? selectedHealthStatus;
+  final int spiritScore;
+  final int furScore;
+  final bool hasInjury;
+  final String injuryDescription;
+  final String weightEstimate;
+  final Function(HealthStatus?)? onHealthStatusChanged;
+  final Function(int)? onSpiritScoreChanged;
+  final Function(int)? onFurScoreChanged;
+  final Function(bool)? onHasInjuryChanged;
+  final Function(String)? onInjuryDescriptionChanged;
+  final Function(String)? onWeightChanged;
 
-  const HealthObservations({super.key, required this.onChanged});
+  const HealthObservations({
+    super.key,
+    this.selectedHealthStatus,
+    this.spiritScore = 3,
+    this.furScore = 3,
+    this.hasInjury = false,
+    this.injuryDescription = '',
+    this.weightEstimate = '',
+    this.onHealthStatusChanged,
+    this.onSpiritScoreChanged,
+    this.onFurScoreChanged,
+    this.onHasInjuryChanged,
+    this.onInjuryDescriptionChanged,
+    this.onWeightChanged,
+  });
 
   @override
   State<HealthObservations> createState() => _HealthObservationsState();
 }
 
 class _HealthObservationsState extends State<HealthObservations> {
-  String _healthStatus = 'good';
-  int _spiritScore = 3;
-  int _furScore = 3;
-  bool _hasInjury = false;
   final _injuryController = TextEditingController();
   final _weightController = TextEditingController();
   final _notesController = TextEditingController();
 
-  final _healthStatuses = const [
-    {'key': 'excellent', 'label': '非常好', 'emoji': '😻', 'color': AppColors.success},
-    {'key': 'good', 'label': '良好', 'emoji': '😺', 'color': AppColors.success},
-    {'key': 'fair', 'label': '一般', 'emoji': '🐱', 'color': AppColors.warning},
-    {'key': 'poor', 'label': '较差', 'emoji': '😿', 'color': AppColors.error},
-    {'key': 'critical', 'label': '危急', 'emoji': '🙀', 'color': AppColors.error},
+  static const _healthStatuses = [
+    {'key': 'excellent', 'label': '非常好', 'emoji': '😻', 'color': 0xFF4CAF50},
+    {'key': 'good', 'label': '良好', 'emoji': '😺', 'color': 0xFF4CAF50},
+    {'key': 'fair', 'label': '一般', 'emoji': '🐱', 'color': 0xFFFF9800},
+    {'key': 'poor', 'label': '较差', 'emoji': '😿', 'color': 0xFFE57373},
+    {'key': 'critical', 'label': '危急', 'emoji': '🙀', 'color': 0xFFE57373},
   ];
 
-  void _notifyChange() {
-    widget.onChanged({
-      'healthStatus': _healthStatus,
-      'spiritScore': _spiritScore,
-      'furScore': _furScore,
-      'hasInjury': _hasInjury,
-      'injuryDescription': _injuryController.text,
-      'weightEstimate': _weightController.text.isEmpty ? null : double.tryParse(_weightController.text),
-      'notes': _notesController.text,
-    });
+  String get _healthStatusKey =>
+      widget.selectedHealthStatus?.name ?? 'good';
+
+  @override
+  void initState() {
+    super.initState();
+    _injuryController.text = widget.injuryDescription;
+    _weightController.text = widget.weightEstimate;
   }
 
   @override
@@ -60,7 +80,7 @@ class _HealthObservationsState extends State<HealthObservations> {
           spacing: 8,
           runSpacing: 8,
           children: _healthStatuses.map((status) {
-            final isSelected = _healthStatus == status['key'];
+            final isSelected = _healthStatusKey == status['key'];
             return ChoiceChip(
               label: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -71,11 +91,14 @@ class _HealthObservationsState extends State<HealthObservations> {
                 ],
               ),
               selected: isSelected,
-              selectedColor: (status['color'] as Color).withAlpha(40),
+              selectedColor: Color(status['color'] as int).withAlpha(40),
               onSelected: (selected) {
                 if (selected) {
-                  setState(() => _healthStatus = status['key']! as String);
-                  _notifyChange();
+                  final hs = HealthStatus.values.firstWhere(
+                    (e) => e.name == status['key'],
+                    orElse: () => HealthStatus.good,
+                  );
+                  widget.onHealthStatusChanged?.call(hs);
                 }
               },
             );
@@ -87,12 +110,9 @@ class _HealthObservationsState extends State<HealthObservations> {
         Text('精神状态 (1-5)', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 4),
         _buildScoreSelector(
-          score: _spiritScore,
+          score: widget.spiritScore,
           labels: const ['很差', '较差', '一般', '良好', '非常好'],
-          onChanged: (score) {
-            setState(() => _spiritScore = score);
-            _notifyChange();
-          },
+          onChanged: (score) => widget.onSpiritScoreChanged?.call(score),
         ),
         const SizedBox(height: 16),
 
@@ -100,12 +120,9 @@ class _HealthObservationsState extends State<HealthObservations> {
         Text('毛发状态 (1-5)', style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 4),
         _buildScoreSelector(
-          score: _furScore,
+          score: widget.furScore,
           labels: const ['很差', '较差', '一般', '良好', '非常好'],
-          onChanged: (score) {
-            setState(() => _furScore = score);
-            _notifyChange();
-          },
+          onChanged: (score) => widget.onFurScoreChanged?.call(score),
         ),
         const SizedBox(height: 16),
 
@@ -113,16 +130,14 @@ class _HealthObservationsState extends State<HealthObservations> {
         Row(
           children: [
             Checkbox(
-              value: _hasInjury,
-              onChanged: (value) {
-                setState(() => _hasInjury = value ?? false);
-                _notifyChange();
-              },
+              value: widget.hasInjury,
+              onChanged: (value) =>
+                  widget.onHasInjuryChanged?.call(value ?? false),
             ),
             const Text('有伤病/异常'),
           ],
         ),
-        if (_hasInjury) ...[
+        if (widget.hasInjury) ...[
           const SizedBox(height: 8),
           TextField(
             controller: _injuryController,
@@ -130,7 +145,8 @@ class _HealthObservationsState extends State<HealthObservations> {
             decoration: const InputDecoration(
               hintText: '描述伤病情况（位置、严重程度等）...',
             ),
-            onChanged: (_) => _notifyChange(),
+            onChanged: (value) =>
+                widget.onInjuryDescriptionChanged?.call(value),
           ),
         ],
         const SizedBox(height: 16),
@@ -145,7 +161,7 @@ class _HealthObservationsState extends State<HealthObservations> {
             hintText: '例如: 4.5',
             suffixText: 'kg',
           ),
-          onChanged: (_) => _notifyChange(),
+          onChanged: (value) => widget.onWeightChanged?.call(value),
         ),
         const SizedBox(height: 16),
 
@@ -158,7 +174,6 @@ class _HealthObservationsState extends State<HealthObservations> {
           decoration: const InputDecoration(
             hintText: '记录其他观察到的细节...',
           ),
-          onChanged: (_) => _notifyChange(),
         ),
 
         // 异常提示

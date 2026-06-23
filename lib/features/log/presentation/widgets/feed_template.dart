@@ -2,36 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../domain/enums/feed_type.dart';
+import '../../../domain/enums/feed_amount.dart';
 
 /// 投喂模板组件 — 快速记录投喂
 class FeedTemplate extends ConsumerStatefulWidget {
-  final Function(String feedType, String feedAmount, String? notes) onSave;
+  final FeedType? selectedFeedType;
+  final FeedAmount? selectedFeedAmount;
+  final Function(FeedType?)? onFeedTypeChanged;
+  final Function(FeedAmount?)? onFeedAmountChanged;
 
-  const FeedTemplate({super.key, required this.onSave});
+  const FeedTemplate({
+    super.key,
+    this.selectedFeedType,
+    this.selectedFeedAmount,
+    this.onFeedTypeChanged,
+    this.onFeedAmountChanged,
+  });
 
   @override
   ConsumerState<FeedTemplate> createState() => _FeedTemplateState();
 }
 
 class _FeedTemplateState extends ConsumerState<FeedTemplate> {
-  String _selectedType = 'dry_food';
-  String _selectedAmount = 'medium';
   final _notesController = TextEditingController();
 
-  final _feedTypes = const [
-    {'key': 'dry_food', 'label': '干粮', 'icon': '🍚'},
-    {'key': 'wet_food', 'label': '湿粮', 'icon': '🥫'},
-    {'key': 'treat', 'label': '零食', 'icon': '🍤'},
-    {'key': 'raw', 'label': '生骨肉', 'icon': '🍖'},
-    {'key': 'milk', 'label': '羊奶', 'icon': '🥛'},
-    {'key': 'other', 'label': '其他', 'icon': '🍽️'},
+  static const _feedTypes = [
+    {'key': 'dryFood', 'label': '干粮', 'icon': '🍚', 'enum': FeedType.dryFood},
+    {'key': 'wetFood', 'label': '湿粮', 'icon': '🥫', 'enum': FeedType.wetFood},
+    {'key': 'treat', 'label': '零食', 'icon': '🍤', 'enum': FeedType.treat},
+    {'key': 'raw', 'label': '生骨肉', 'icon': '🍖', 'enum': FeedType.raw},
+    {'key': 'milk', 'label': '羊奶', 'icon': '🥛', 'enum': FeedType.milk},
+    {'key': 'other', 'label': '其他', 'icon': '🍽️', 'enum': FeedType.other},
   ];
 
-  final _feedAmounts = const [
-    {'key': 'small', 'label': '少量', 'desc': '约10-20g'},
-    {'key': 'medium', 'label': '适量', 'desc': '约30-50g'},
-    {'key': 'large', 'label': '大量', 'desc': '约60g以上'},
+  static const _feedAmounts = [
+    {'key': 'small', 'label': '少量', 'desc': '约10-20g', 'enum': FeedAmount.small},
+    {'key': 'medium', 'label': '适量', 'desc': '约30-50g', 'enum': FeedAmount.medium},
+    {'key': 'large', 'label': '大量', 'desc': '约60g以上', 'enum': FeedAmount.large},
   ];
+
+  String get _selectedTypeKey =>
+      widget.selectedFeedType?.name ?? 'dryFood';
+  String get _selectedAmountKey =>
+      widget.selectedFeedAmount?.name ?? 'medium';
 
   @override
   void dispose() {
@@ -51,7 +65,7 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
           spacing: 8,
           runSpacing: 8,
           children: _feedTypes.map((type) {
-            final isSelected = _selectedType == type['key'];
+            final isSelected = _selectedTypeKey == type['key'];
             return ChoiceChip(
               label: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -63,7 +77,9 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
               ),
               selected: isSelected,
               onSelected: (selected) {
-                if (selected) setState(() => _selectedType = type['key']!);
+                if (selected) {
+                  widget.onFeedTypeChanged?.call(type['enum'] as FeedType);
+                }
               },
             );
           }).toList(),
@@ -75,7 +91,7 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
         const SizedBox(height: 8),
         Row(
           children: _feedAmounts.map((amount) {
-            final isSelected = _selectedAmount == amount['key'];
+            final isSelected = _selectedAmountKey == amount['key'];
             return Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -89,7 +105,9 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
                   ),
                   selected: isSelected,
                   onSelected: (selected) {
-                    if (selected) setState(() => _selectedAmount = amount['key']!);
+                    if (selected) {
+                      widget.onFeedAmountChanged?.call(amount['enum'] as FeedAmount);
+                    }
                   },
                 ),
               ),
@@ -110,24 +128,7 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
         ),
         const SizedBox(height: 16),
 
-        // 保存按钮
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: () {
-              widget.onSave(
-                _selectedType,
-                _selectedAmount,
-                _notesController.text.isEmpty ? null : _notesController.text,
-              );
-            },
-            icon: const Icon(Icons.save),
-            label: const Text('保存投喂记录'),
-          ),
-        ),
-
         // 科学建议
-        const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
