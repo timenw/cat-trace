@@ -2,6 +2,8 @@ import 'package:isar/isar.dart';
 import '../../features/log/domain/enums/log_type.dart';
 import '../../features/log/domain/enums/feed_type.dart';
 import '../../features/log/domain/enums/health_status.dart';
+import '../../features/log/domain/entities/log_entity.dart'
+    show FeedAmount;
 import 'photo_schema.dart';
 
 part 'log_schema.g.dart';
@@ -70,11 +72,4 @@ class LogSchema {
 
   /// 经度（可选）
   double? longitude;
-}
-
-/// 投喂量枚举
-enum FeedAmount {
-  small,    // 少量
-  medium,   // 适量
-  large,    // 大量
 }

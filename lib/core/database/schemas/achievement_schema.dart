@@ -1,4 +1,6 @@
 import 'package:isar/isar.dart';
+import '../../features/achievement/domain/entities/achievement_entity.dart'
+    show AchievementRarity, AchievementCategory;
 
 part 'achievement_schema.g.dart';
 
@@ -45,21 +47,4 @@ class AchievementSchema {
 
   /// 排序
   int sortOrder = 0;
-}
-
-/// 成就稀有度
-enum AchievementRarity {
-  common,
-  uncommon,
-  rare,
-  epic,
-  legendary,
-}
-
-/// 成就分类
-enum AchievementCategory {
-  collection,  // 收集类
-  log,         // 记录类
-  tnr,         // TNR 类
-  special,     // 特殊类
 }

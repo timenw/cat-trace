@@ -6,7 +6,11 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/router/app_router.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../cat/domain/entities/cat_entity.dart';
+import '../../cat/presentation/pages/cat_list_page.dart';
 import '../../cat/presentation/providers/cat_providers.dart';
+import '../../calendar/presentation/pages/calendar_page.dart';
+import '../../achievement/presentation/pages/achievement_page.dart';
+import '../../settings/presentation/pages/settings_page.dart';
 import '../domain/usecases/get_home_stats.dart';
 import '../presentation/widgets/collection_stats.dart';
 import '../presentation/widgets/home_search_bar.dart';
@@ -192,66 +196,42 @@ class _HomeTab extends ConsumerWidget {
   }
 }
 
-/// 图鉴 Tab（占位）
+/// 图鉴 Tab
 class _CatListTab extends StatelessWidget {
   const _CatListTab();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: EmptyState(
-        icon: '🐱',
-        title: '我的图鉴',
-        subtitle: '还没有记录的猫咪\n点击右下角 + 开始记录',
-      ),
-    );
+    return const CatListPage();
   }
 }
 
-/// 日历 Tab（占位）
+/// 日历 Tab
 class _CalendarTab extends StatelessWidget {
   const _CalendarTab();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: EmptyState(
-        icon: '📅',
-        title: '日历',
-        subtitle: '查看投喂和观察记录的时间线',
-      ),
-    );
+    return const CalendarPage();
   }
 }
 
-/// 成就 Tab（占位）
+/// 成就 Tab
 class _AchievementTab extends StatelessWidget {
   const _AchievementTab();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: EmptyState(
-        icon: '🏆',
-        title: '成就',
-        subtitle: '记录猫咪收集进度，解锁成就徽章',
-      ),
-    );
+    return const AchievementPage();
   }
 }
 
-/// 设置 Tab（占位）
+/// 设置 Tab
 class _SettingsTab extends StatelessWidget {
   const _SettingsTab();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: EmptyState(
-        icon: '⚙️',
-        title: '设置',
-        subtitle: '隐私、备份、数据管理',
-      ),
-    );
+    return const SettingsPage();
   }
 }

@@ -3,6 +3,8 @@ import '../../features/cat/domain/enums/cat_breed.dart';
 import '../../features/cat/domain/enums/cat_color.dart';
 import '../../features/cat/domain/enums/tnr_status.dart';
 import '../../features/cat/domain/enums/rarity.dart';
+import '../../features/cat/domain/entities/cat_entity.dart'
+    show CatGender;
 import 'photo_schema.dart';
 import 'log_schema.dart';
 
@@ -28,7 +30,7 @@ class CatSchema {
   /// 性别: unknown, male, female
   @Index()
   @enumerated
-  CatGender gender = CatGender.unknown;
+  CatEntityGender gender = CatEntityGender.unknown;
 
   /// 估算年龄（月）
   int? estimatedAgeMonths;
@@ -97,11 +99,4 @@ class CatSchema {
 
   /// 计算属性：照片数量
   int get photoCount => photos.length;
-}
-
-/// 猫咪性别枚举
-enum CatGender {
-  unknown,
-  male,
-  female,
 }
