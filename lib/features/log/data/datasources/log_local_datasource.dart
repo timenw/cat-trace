@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 
 import '../../../../core/database/schemas/log_schema.dart';
-import '../../../domain/entities/log_entity.dart';
+import '../../domain/entities/log_entity.dart';
 
 /// 日志本地数据源
 ///

@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 
-import '../../../core/database/schemas/cat_schema.dart';
+import '../../../../core/database/schemas/cat_schema.dart';
 import '../../domain/entities/cat_entity.dart';
 
 /// 猫咪本地数据源

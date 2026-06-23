@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 
-import '../../../core/database/schemas/log_schema.dart';
+import '../../../../core/database/schemas/log_schema.dart';
 import '../../domain/entities/log_entity.dart';
 
 /// 日志仓库实现 — 基于 Isar 数据库

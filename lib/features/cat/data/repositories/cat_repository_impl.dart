@@ -1,4 +1,4 @@
-import 'datasources/cat_local_datasource.dart';
+import '../datasources/cat_local_datasource.dart';
 import '../../domain/entities/cat_entity.dart';
 import '../../domain/repositories/cat_repository.dart';
 

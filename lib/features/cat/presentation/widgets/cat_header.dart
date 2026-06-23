@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../domain/entities/cat_entity.dart';
+import '../../domain/entities/cat_entity.dart';
 import 'tnr_badge.dart';
 
 /// 猫咪详情页头部组件

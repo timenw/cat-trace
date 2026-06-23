@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../domain/entities/achievement_entity.dart';
+import '../../domain/entities/achievement_entity.dart';
 
 /// 成就卡片组件
 class AchievementCard extends StatelessWidget {

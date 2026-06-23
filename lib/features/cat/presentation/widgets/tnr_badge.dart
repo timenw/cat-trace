@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../domain/enums/tnr_status.dart';
+import '../../domain/enums/tnr_status.dart';
 
 /// TNR 状态徽章
 ///
