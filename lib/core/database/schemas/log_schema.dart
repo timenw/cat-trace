@@ -31,16 +31,16 @@ class LogSchema {
   /// ====== 投喂相关 ======
   /// 食物类型
   @enumerated
-  FeedType? feedType;
+  FeedType feedType = FeedType.other;
 
   /// 投喂量: small, medium, large
   @enumerated
-  FeedAmount? feedAmount;
+  FeedAmount feedAmount = FeedAmount.medium;
 
   /// ====== 健康观察相关 ======
   /// 整体健康状态
   @enumerated
-  HealthStatus? healthStatus;
+  HealthStatus healthStatus = HealthStatus.good;
 
   /// 精神状态评分 (1-5)
   int? spiritScore;
