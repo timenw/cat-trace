@@ -506,4 +506,42 @@ class CatTheme {
   static const double radiusMedium = 12;
 
   /// 大圆角
-  static const double radiusLarge =
+  static const double radiusLarge = 16;
+
+  /// 超大圆角
+  static const double radiusXLarge = 24;
+
+  /// 圆形
+  static const double radiusCircle = 999;
+
+  // ==================== 间距 ====================
+
+  /// 超小间距
+  static const double spacingXS = 4;
+
+  /// 小间距
+  static const double spacingS = 8;
+
+  /// 中等间距
+  static const double spacingM = 16;
+
+  /// 大间距
+  static const double spacingL = 24;
+
+  /// 超大间距
+  static const double spacingXL = 32;
+
+  // ==================== 图标大小 ====================
+
+  /// 小图标
+  static const double iconSmall = 16;
+
+  /// 中等图标
+  static const double iconMedium = 24;
+
+  /// 大图标
+  static const double iconLarge = 32;
+
+  /// 超大图标
+  static const double iconXLarge = 48;
+}

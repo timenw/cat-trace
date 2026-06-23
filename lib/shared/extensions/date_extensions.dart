@@ -18,7 +18,7 @@ extension DateExtensions on DateTime {
     } else if (current == yesterday) {
       return '昨天 $timeStr';
     } else {
-      return '${year}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')} $timeStr';
+      return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')} $timeStr';
     }
   }
 
@@ -45,6 +45,6 @@ extension DateExtensions on DateTime {
 
   /// 转换为 yyyy-MM-dd 格式的字符串
   String toYmd() {
-    return '${year}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+    return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
   }
 }

@@ -1,33 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// 猫咪稀有度枚举
-enum CatRarity {
-  /// 常见
-  common('常见', 1),
-
-  /// 稀有
-  rare('稀有', 2),
-
-  /// 史诗
-  epic('史诗', 3),
-
-  /// 传说
-  legendary('传说', 4),
-
-  /// 神话
-  mythic('神话', 5);
-
-  final String label;
-  final int level;
-
-  const CatRarity(this.label, this.level);
-}
-
 /// 稀有度徽章组件
 /// 展示猫咪的稀有度等级，支持多种样式
 class RarityBadge extends StatelessWidget {
   /// 稀有度
-  final CatRarity rarity;
+  final Rarity rarity;
 
   /// 徽章大小
   final double size;
@@ -77,23 +54,23 @@ class RarityBadge extends StatelessWidget {
   });
 
   /// 获取稀有度对应的颜色
-  static Color getRarityColor(CatRarity rarity) {
+  static Color getRarityColor(Rarity rarity) {
     switch (rarity) {
-      case CatRarity.common:
+      case Rarity.common:
         return const Color(0xFF9E9E9E); // 灰色
-      case CatRarity.rare:
+      case Rarity.uncommon:
+        return const Color(0xFF4CAF50); // 绿色
+      case Rarity.rare:
         return const Color(0xFF42A5F5); // 蓝色
-      case CatRarity.epic:
+      case Rarity.epic:
         return const Color(0xFFAB47BC); // 紫色
-      case CatRarity.legendary:
+      case Rarity.legendary:
         return const Color(0xFFFFA726); // 橙色
-      case CatRarity.mythic:
-        return const Color(0xFFEF5350); // 红色
     }
   }
 
   /// 获取稀有度对应的渐变色
-  static LinearGradient getRarityGradient(CatRarity rarity) {
+  static LinearGradient getRarityGradient(Rarity rarity) {
     final color = getRarityColor(rarity);
     return LinearGradient(
       colors: [
@@ -278,7 +255,7 @@ enum RarityBadgeStyle {
 /// 展示当前稀有度等级和进度
 class RarityProgressBar extends StatelessWidget {
   /// 当前稀有度
-  final CatRarity currentRarity;
+  final Rarity currentRarity;
 
   /// 当前经验值
   final int currentExp;
@@ -348,4 +325,18 @@ class RarityProgressBar extends StatelessWidget {
       ],
     );
   }
+}
+
+/// 稀有度枚举（与 domain 层保持一致）
+enum Rarity {
+  common('普通', 1),
+  uncommon('稀有', 2),
+  rare('罕见', 3),
+  epic('史诗', 4),
+  legendary('传说', 5);
+
+  final String label;
+  final int level;
+
+  const Rarity(this.label, this.level);
 }

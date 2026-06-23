@@ -148,7 +148,11 @@ class DisclaimerDialog extends StatelessWidget {
 
             // 复选框确认
             if (showCheckbox) ...[
-              const _CheckboxConfirmation(),
+              _CheckboxConfirmation(
+                onChanged: (value) {
+                  _isChecked = value ?? false;
+                },
+              ),
               const SizedBox(height: 16),
             ],
 
@@ -334,7 +338,7 @@ class _CheckboxConfirmationState extends State<_CheckboxConfirmation> {
       children: [
         Checkbox(
           value: _checked,
-          onChanged: (value) => setState(() => _checked = value),
+          onChanged: (value) => setState(() => _checked = value ?? false),
         ),
         Expanded(
           child: Text(

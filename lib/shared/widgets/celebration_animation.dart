@@ -277,7 +277,7 @@ enum CelebrationType {
 /// 根据猫咪稀有度展示不同强度的庆祝效果
 class RarityCelebration extends StatefulWidget {
   /// 猫咪稀有度
-  final CatRarity rarity;
+  final Rarity rarity;
 
   /// 猫咪名称
   final String catName;
@@ -341,13 +341,14 @@ class _RarityCelebrationState extends State<RarityCelebration>
   /// 根据稀有度获取庆祝类型
   CelebrationType get _celebrationType {
     switch (widget.rarity) {
-      case CatRarity.common:
+      case Rarity.common:
         return CelebrationType.paws;
-      case CatRarity.rare:
+      case Rarity.uncommon:
         return CelebrationType.stars;
-      case CatRarity.epic:
-      case CatRarity.legendary:
-      case CatRarity.mythic:
+      case Rarity.rare:
+        return CelebrationType.stars;
+      case Rarity.epic:
+      case Rarity.legendary:
         return CelebrationType.confetti;
     }
   }

@@ -21,10 +21,10 @@ extension ColorExtensions on Color {
     assert(amount >= 0.0 && amount <= 1.0, 'amount 必须在 0.0 到 1.0 之间');
     final factor = 1.0 - amount;
     return Color.fromRGBO(
-      (r * factor).round(),
-      (g * factor).round(),
-      (b * factor).round(),
-      1.0,
+      (red * factor).round(),
+      (green * factor).round(),
+      (blue * factor).round(),
+      opacity,
     );
   }
 
@@ -35,10 +35,10 @@ extension ColorExtensions on Color {
     assert(amount >= 0.0 && amount <= 1.0, 'amount 必须在 0.0 到 1.0 之间');
     final inv = 1.0 - amount;
     return Color.fromRGBO(
-      ((r * inv) + (255 * amount)).round().clamp(0, 255),
-      ((g * inv) + (255 * amount)).round().clamp(0, 255),
-      ((b * inv) + (255 * amount)).round().clamp(0, 255),
-      1.0,
+      ((red * inv) + (255 * amount)).round().clamp(0, 255),
+      ((green * inv) + (255 * amount)).round().clamp(0, 255),
+      ((blue * inv) + (255 * amount)).round().clamp(0, 255),
+      opacity,
     );
   }
 }
