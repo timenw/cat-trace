@@ -2,76 +2,72 @@ name: Build CatTrace APK
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-env:
-  JAVA_VERSION: '17'
-  GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4g -XX:+HeapDumpOnOutOfMemoryError"'
+    branches: [ master, main ]
 
 jobs:
-  build:
+  lint:
+    name: Lint & Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter analyze
+
+  test:
+    name: Unit & Widget Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test
+
+  build-debug:
     name: Build Debug APK
     runs-on: ubuntu-latest
-
+    needs: test
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
         with:
-          gradle-version: wrapper
-          build-root-directory: android
+          name: cat-trace-debug
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
-      - name: Grant execute permission for gradlew
-        working-directory: android
-        run: chmod +x gradlew
-
-      - name: Run lint checks
-        working-directory: android
-        run: ./gradlew lintDebug
-
-      - name: Run unit tests
-        working-directory: android
-        run: ./gradlew testDebugUnitTest
-
-      - name: Build debug APK
-        working-directory: android
-        run: ./gradlew assembleDebug
-
-      - name: Build release APK
-        if: github.ref == 'refs/heads/main'
-        working-directory: android
-        run: ./gradlew assembleRelease
-
-      - name: Upload debug APK
-        uses: actions/upload-artifact@v4
+  build-release:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          name: cattrace-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 30
-
-      - name: Upload release APK
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - name: Rename APK
+        run: |
+          DATE=$(date +%Y%m%d)
+          HASH=${GITHUB_SHA::7}
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/CatTrace-v1.0.0-${DATE}-${HASH}.apk
+      - uses: actions/upload-artifact@v4
         with:
-          name: cattrace-release-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
-          retention-days: 90
-
-      - name: Upload lint report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-report
-          path: android/app/build/reports/lint-results-debug.html
-          retention-days: 14
+          name: cat-trace-release
+          path: build/app/outputs/flutter-apk/CatTrace-v1.0.0-*.apk
