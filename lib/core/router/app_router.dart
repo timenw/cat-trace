@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../features/splash/presentation/pages/splash_page.dart';
-import '../features/home/presentation/pages/home_page.dart';
-import '../features/cat/presentation/pages/cat_list_page.dart';
-import '../features/cat/presentation/pages/cat_detail_page.dart';
-import '../features/cat/presentation/pages/add_edit_cat_page.dart';
-import '../features/log/presentation/pages/add_log_page.dart';
-import '../features/calendar/presentation/pages/calendar_page.dart';
-import '../features/achievement/presentation/pages/achievement_page.dart';
-import '../features/settings/presentation/pages/settings_page.dart';
-import '../features/tnr/presentation/pages/tnr_guide_page.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/cat/presentation/pages/cat_list_page.dart';
+import '../../features/cat/presentation/pages/cat_detail_page.dart';
+import '../../features/cat/presentation/pages/add_edit_cat_page.dart';
+import '../../features/log/presentation/pages/add_log_page.dart';
+import '../../features/calendar/presentation/pages/calendar_page.dart';
+import '../../features/achievement/presentation/pages/achievement_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/tnr/presentation/pages/tnr_guide_page.dart';
 
 /// 路由名称常量
 class RouteNames {

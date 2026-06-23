@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../shared/extensions/date_extensions.dart';
 
 /// 隐私设置组件
 class PrivacySettings extends StatelessWidget {
@@ -35,7 +36,7 @@ class PrivacySettings extends StatelessWidget {
           subtitle: const Text('自动添加时间戳和随机ID'),
           value: watermarkEnabled,
           onChanged: onWatermarkChanged,
-          secondary: const Icon(Icons.watermark),
+          secondary: const Icon(Icons.water_drop),
         ),
       ],
     );

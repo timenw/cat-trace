@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/router/app_router.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/router/app_router.dart';
 
 /// 设置页面
 class SettingsPage extends ConsumerWidget {

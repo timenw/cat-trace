@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/router/app_router.dart';
-import '../../../core/database/isar_database.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../core/database/isar_database.dart';
 
 /// 启动页
 class SplashPage extends ConsumerStatefulWidget {

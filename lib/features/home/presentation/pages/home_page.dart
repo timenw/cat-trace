@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/router/app_router.dart';
-import '../../../shared/widgets/empty_state.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/router/app_router.dart';
+import '../../../../shared/widgets/empty_state.dart';
 import '../../cat/domain/entities/cat_entity.dart';
 import '../../cat/presentation/pages/cat_list_page.dart';
 import '../../cat/presentation/providers/cat_providers.dart';

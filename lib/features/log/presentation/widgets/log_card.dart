@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/extensions/date_extensions.dart';
-import '../../domain/entities/log_entity.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../domain/enums/log_type.dart';
+import '../../../../core/extensions/date_extensions.dart';
+import '../../../domain/entities/log_entity.dart';
 
 /// 日志卡片组件
 class LogCard extends StatelessWidget {

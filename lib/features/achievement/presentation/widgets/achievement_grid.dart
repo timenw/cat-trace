@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../domain/entities/achievement_entity.dart';
+import '../../../domain/entities/achievement_entity.dart';
 import 'achievement_card.dart';
 
 /// 成就网格组件

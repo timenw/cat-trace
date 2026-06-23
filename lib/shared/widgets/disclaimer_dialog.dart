@@ -148,11 +148,7 @@ class DisclaimerDialog extends StatelessWidget {
 
             // 复选框确认
             if (showCheckbox) ...[
-              _CheckboxConfirmation(
-                onChanged: (value) {
-                  _isChecked = value ?? false;
-                },
-              ),
+              const _CheckboxConfirmation(),
               const SizedBox(height: 16),
             ],
 
@@ -325,6 +321,8 @@ class _ScrollableContentState extends State<_ScrollableContent> {
 
 /// 复选框确认组件
 class _CheckboxConfirmation extends StatefulWidget {
+  const _CheckboxConfirmation();
+
   @override
   State<_CheckboxConfirmation> createState() => _CheckboxConfirmationState();
 }

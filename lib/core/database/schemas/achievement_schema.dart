@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import '../../features/achievement/domain/entities/achievement_entity.dart'
+import '../../../features/achievement/domain/entities/achievement_entity.dart'
     show AchievementRarity, AchievementCategory;
 
 part 'achievement_schema.g.dart';

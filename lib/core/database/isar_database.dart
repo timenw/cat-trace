@@ -24,10 +24,10 @@ class IsarDatabase {
     final dir = await getApplicationDocumentsDirectory();
     _instance = await Isar.open(
       [
-        CatSchemaSchema,
-        LogSchemaSchema,
-        PhotoSchemaSchema,
-        AchievementSchemaSchema,
+        CatSchema,
+        LogSchema,
+        PhotoSchema,
+        AchievementSchema,
       ],
       directory: dir.path,
       name: AppConstants.dbName,

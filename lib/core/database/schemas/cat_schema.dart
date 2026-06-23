@@ -1,9 +1,9 @@
 import 'package:isar/isar.dart';
-import '../../features/cat/domain/enums/cat_breed.dart';
-import '../../features/cat/domain/enums/cat_color.dart';
-import '../../features/cat/domain/enums/tnr_status.dart';
-import '../../features/cat/domain/enums/rarity.dart';
-import '../../features/cat/domain/entities/cat_entity.dart'
+import '../../../features/cat/domain/enums/cat_breed.dart';
+import '../../../features/cat/domain/enums/cat_color.dart';
+import '../../../features/cat/domain/enums/tnr_status.dart';
+import '../../../features/cat/domain/enums/rarity.dart';
+import '../../../features/cat/domain/entities/cat_entity.dart'
     show CatGender;
 import 'photo_schema.dart';
 import 'log_schema.dart';
@@ -30,7 +30,7 @@ class CatSchema {
   /// 性别: unknown, male, female
   @Index()
   @enumerated
-  CatEntityGender gender = CatEntityGender.unknown;
+  CatGender gender = CatGender.unknown;
 
   /// 估算年龄（月）
   int? estimatedAgeMonths;

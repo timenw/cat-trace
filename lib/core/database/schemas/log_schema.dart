@@ -1,8 +1,8 @@
 import 'package:isar/isar.dart';
-import '../../features/log/domain/enums/log_type.dart';
-import '../../features/log/domain/enums/feed_type.dart';
-import '../../features/log/domain/enums/health_status.dart';
-import '../../features/log/domain/entities/log_entity.dart'
+import '../../../features/log/domain/enums/log_type.dart';
+import '../../../features/log/domain/enums/feed_type.dart';
+import '../../../features/log/domain/enums/health_status.dart';
+import '../../../features/log/domain/entities/log_entity.dart'
     show FeedAmount;
 import 'photo_schema.dart';
 
