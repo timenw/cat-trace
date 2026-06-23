@@ -71,7 +71,6 @@ class RecentCats extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: 3,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemCount: 3,
         itemBuilder: (context, index) {
           return SizedBox(
             width: 80,

@@ -96,7 +96,7 @@ class LogDto {
     this.locationHint,
     this.latitude,
     this.longitude,
-  }) : recordedAt = recordedAt ?? const DateTime(0);
+  }) : recordedAt = recordedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
 
   /// 从 JSON Map 创建 LogDto 实例
   ///

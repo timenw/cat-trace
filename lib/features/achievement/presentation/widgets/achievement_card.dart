@@ -7,8 +7,15 @@ import '../../domain/entities/achievement_entity.dart';
 /// 成就卡片组件
 class AchievementCard extends StatelessWidget {
   final AchievementEntity achievement;
+  final bool compact;
+  final VoidCallback? onTap;
 
-  const AchievementCard({super.key, required this.achievement});
+  const AchievementCard({
+    super.key,
+    required this.achievement,
+    this.compact = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

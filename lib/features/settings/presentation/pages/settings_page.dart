@@ -75,7 +75,7 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.info_outline,
             title: 'TNR 科普',
             subtitle: '了解 TNR 的意义和方法',
-            onTap: () => context.push(RoutePaths.tnrGuide),
+            onTap: () => context.go(RoutePaths.tnrGuide),
           ),
           _SettingsTile(
             icon: Icons.phone_outlined,
