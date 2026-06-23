@@ -23,6 +23,6 @@ class DeleteCat {
 
 /// DeleteCat UseCase 的 Riverpod Provider
 @riverpod
-DeleteCat deleteCat(DeleteCatRef ref, CatRepository repository) {
+DeleteCat deleteCat(Ref ref, CatRepository repository) {
   return DeleteCat(repository);
 }

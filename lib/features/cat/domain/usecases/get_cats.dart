@@ -22,6 +22,6 @@ class GetCats {
 
 /// GetCats UseCase 的 Riverpod Provider
 @riverpod
-GetCats getCats(GetCatsRef ref, CatRepository repository) {
+GetCats getCats(Ref ref, CatRepository repository) {
   return GetCats(repository);
 }

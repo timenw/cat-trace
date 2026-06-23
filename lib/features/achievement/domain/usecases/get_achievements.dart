@@ -65,6 +65,6 @@ class GetAchievements {
 /// 使用 @riverpod 注解自动生成 Provider 代码。
 /// 运行 `dart run build_runner build` 生成对应的 .g.dart 文件。
 @riverpod
-GetAchievements getAchievements(GetAchievementsRef ref, AchievementRepository repository) {
+GetAchievements getAchievements(Ref ref, AchievementRepository repository) {
   return GetAchievements(repository);
 }

@@ -31,6 +31,6 @@ class GetLogsByCat {
 
 /// GetLogsByCat UseCase 的 Riverpod Provider
 @riverpod
-GetLogsByCat getLogsByCat(GetLogsByCatRef ref, LogRepository repository) {
+GetLogsByCat getLogsByCat(Ref ref, LogRepository repository) {
   return GetLogsByCat(repository);
 }

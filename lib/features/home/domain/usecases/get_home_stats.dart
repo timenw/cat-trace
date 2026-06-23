@@ -156,7 +156,7 @@ class GetHomeStats {
 ///
 /// 注入 CatRepository 和 LogRepository，创建 GetHomeStats 实例。
 @riverpod
-GetHomeStats getHomeStats(GetHomeStatsRef ref, CatRepository catRepository,
+GetHomeStats getHomeStats(Ref ref, CatRepository catRepository,
     LogRepository logRepository) {
   return GetHomeStats(catRepository, logRepository);
 }

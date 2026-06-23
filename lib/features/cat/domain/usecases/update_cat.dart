@@ -23,6 +23,6 @@ class UpdateCat {
 
 /// UpdateCat UseCase 的 Riverpod Provider
 @riverpod
-UpdateCat updateCat(UpdateCatRef ref, CatRepository repository) {
+UpdateCat updateCat(Ref ref, CatRepository repository) {
   return UpdateCat(repository);
 }

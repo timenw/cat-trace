@@ -23,6 +23,6 @@ class AddCat {
 
 /// AddCat UseCase 的 Riverpod Provider
 @riverpod
-AddCat addCat(AddCatRef ref, CatRepository repository) {
+AddCat addCat(Ref ref, CatRepository repository) {
   return AddCat(repository);
 }

@@ -144,6 +144,6 @@ class UnlockAchievement {
 /// 使用 @riverpod 注解自动生成 Provider 代码。
 /// 运行 `dart run build_runner build` 生成对应的 .g.dart 文件。
 @riverpod
-UnlockAchievement unlockAchievement(UnlockAchievementRef ref, AchievementRepository repository) {
+UnlockAchievement unlockAchievement(Ref ref, AchievementRepository repository) {
   return UnlockAchievement(repository);
 }

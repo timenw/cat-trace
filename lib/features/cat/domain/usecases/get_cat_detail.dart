@@ -23,6 +23,6 @@ class GetCatDetail {
 
 /// GetCatDetail UseCase 的 Riverpod Provider
 @riverpod
-GetCatDetail getCatDetail(GetCatDetailRef ref, CatRepository repository) {
+GetCatDetail getCatDetail(Ref ref, CatRepository repository) {
   return GetCatDetail(repository);
 }

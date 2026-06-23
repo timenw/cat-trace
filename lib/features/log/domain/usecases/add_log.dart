@@ -31,6 +31,6 @@ class AddLog {
 
 /// AddLog UseCase 的 Riverpod Provider
 @riverpod
-AddLog addLog(AddLogRef ref, LogRepository repository) {
+AddLog addLog(Ref ref, LogRepository repository) {
   return AddLog(repository);
 }
