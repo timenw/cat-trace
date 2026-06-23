@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'rarity_badge.dart';
 
 /// 庆祝动画组件
 /// 当用户收集到新猫咪时展示的庆祝动画效果
@@ -394,7 +395,7 @@ class _RarityCelebrationState extends State<RarityCelebration>
                   painter: _ParticlePainter(
                     progress: _particleController.value,
                     color: _rarityColor,
-                    particleCount: widget.rarity.level * 10,
+                    particleCount: RarityBadge.getRarityLevel(widget.rarity) * 10,
                   ),
                 );
               },

@@ -55,18 +55,7 @@ class RarityBadge extends StatelessWidget {
 
   /// 获取稀有度对应的颜色
   static Color getRarityColor(Rarity rarity) {
-    switch (rarity) {
-      case Rarity.common:
-        return const Color(0xFF9E9E9E); // 灰色
-      case Rarity.uncommon:
-        return const Color(0xFF4CAF50); // 绿色
-      case Rarity.rare:
-        return const Color(0xFF42A5F5); // 蓝色
-      case Rarity.epic:
-        return const Color(0xFFAB47BC); // 紫色
-      case Rarity.legendary:
-        return const Color(0xFFFFA726); // 橙色
-    }
+    return Color(rarity.colorValue);
   }
 
   /// 获取稀有度对应的渐变色
@@ -80,6 +69,22 @@ class RarityBadge extends StatelessWidget {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
+  }
+
+  /// 获取稀有度等级（用于星星数量）
+  static int getRarityLevel(Rarity rarity) {
+    switch (rarity) {
+      case Rarity.common:
+        return 1;
+      case Rarity.uncommon:
+        return 2;
+      case Rarity.rare:
+        return 3;
+      case Rarity.epic:
+        return 4;
+      case Rarity.legendary:
+        return 5;
+    }
   }
 
   @override
@@ -139,7 +144,7 @@ class RarityBadge extends StatelessWidget {
         children: [
           if (showStars) ...[
             ...List.generate(
-              rarity.level,
+              getRarityLevel(rarity),
               (index) => Icon(
                 Icons.star_rounded,
                 size: size * 0.7,
@@ -150,7 +155,7 @@ class RarityBadge extends StatelessWidget {
           ],
           if (showLabel)
             Text(
-              rarity.label,
+              rarity.displayName,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: size * 0.6,
@@ -177,7 +182,7 @@ class RarityBadge extends StatelessWidget {
         children: [
           if (showStars) ...[
             ...List.generate(
-              rarity.level,
+              getRarityLevel(rarity),
               (index) => Icon(
                 Icons.star_rounded,
                 size: size * 0.65,
@@ -188,7 +193,7 @@ class RarityBadge extends StatelessWidget {
           ],
           if (showLabel)
             Text(
-              rarity.label,
+              rarity.displayName,
               style: TextStyle(
                 color: color,
                 fontSize: size * 0.55,
@@ -215,7 +220,7 @@ class RarityBadge extends StatelessWidget {
         children: [
           if (showStars) ...[
             ...List.generate(
-              rarity.level,
+              getRarityLevel(rarity),
               (index) => Icon(
                 Icons.star_rounded,
                 size: size * 0.65,
@@ -226,7 +231,7 @@ class RarityBadge extends StatelessWidget {
           ],
           if (showLabel)
             Text(
-              rarity.label,
+              rarity.displayName,
               style: TextStyle(
                 color: color,
                 fontSize: size * 0.55,
@@ -241,32 +246,17 @@ class RarityBadge extends StatelessWidget {
 
 /// 稀有度徽章样式
 enum RarityBadgeStyle {
-  /// 填充样式
   filled,
-
-  /// 描边样式
   outlined,
-
-  /// 柔和样式
   soft,
 }
 
 /// 稀有度进度条
-/// 展示当前稀有度等级和进度
 class RarityProgressBar extends StatelessWidget {
-  /// 当前稀有度
   final Rarity currentRarity;
-
-  /// 当前经验值
   final int currentExp;
-
-  /// 升级所需经验值
   final int maxExp;
-
-  /// 高度
   final double height;
-
-  /// 是否显示文字
   final bool showText;
 
   const RarityProgressBar({
@@ -296,7 +286,7 @@ class RarityProgressBar extends StatelessWidget {
                   RarityBadge.dot(rarity: currentRarity, size: 10),
                   const SizedBox(width: 6),
                   Text(
-                    currentRarity.label,
+                    currentRarity.displayName,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: color,
@@ -327,16 +317,17 @@ class RarityProgressBar extends StatelessWidget {
   }
 }
 
-/// 稀有度枚举（与 domain 层保持一致）
+/// 稀有度枚举（与 domain/rarity.dart 保持一致）
 enum Rarity {
-  common('普通', 1),
-  uncommon('稀有', 2),
-  rare('罕见', 3),
-  epic('史诗', 4),
-  legendary('传说', 5);
+  common('普通', 'Common', 0xFF9E9E9E),
+  uncommon('稀有', 'Uncommon', 0xFF4CAF50),
+  rare('罕见', 'Rare', 0xFF2196F3),
+  epic('史诗', 'Epic', 0xFF9C27B0),
+  legendary('传说', 'Legendary', 0xFFFF9800);
 
-  final String label;
-  final int level;
+  final String displayName;
+  final String displayNameEn;
+  final int colorValue;
 
-  const Rarity(this.label, this.level);
+  const Rarity(this.displayName, this.displayNameEn, this.colorValue);
 }
