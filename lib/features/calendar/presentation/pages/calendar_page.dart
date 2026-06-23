@@ -14,7 +14,7 @@ class CalendarPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: const EmptyState(
-        icon: '📅',
+        icon: Icons.calendar_month,
         title: '日历视图',
         subtitle: '查看投喂和观察记录的时间线\n即将上线',
       ),

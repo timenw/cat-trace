@@ -14,7 +14,7 @@ class AchievementPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: const EmptyState(
-        icon: '🏆',
+        icon: Icons.emoji_events,
         title: '成就系统',
         subtitle: '记录猫咪收集进度，解锁成就徽章\n即将上线',
       ),

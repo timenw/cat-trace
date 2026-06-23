@@ -12,11 +12,13 @@
 library injection;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:isar/isar';
+import 'package:isar/isar.dart';
 
 import '../database/isar_database.dart';
+import '../../features/cat/data/datasources/cat_local_datasource.dart';
 import '../../features/cat/domain/repositories/cat_repository.dart';
 import '../../features/cat/data/repositories/cat_repository_impl.dart';
+import '../../features/log/data/datasources/log_local_datasource.dart';
 import '../../features/log/data/repositories/log_repository_impl.dart';
 import '../services/image_service.dart';
 import '../services/notification_service.dart';
@@ -43,7 +45,7 @@ final isarProvider = FutureProvider<Isar>((ref) async {
 /// 业务层通过 CatRepository 接口与之交互，不依赖具体实现。
 final catRepositoryProvider = FutureProvider<CatRepository>((ref) async {
   final isar = await ref.watch(isarProvider.future);
-  return CatRepositoryImpl(isar);
+  return CatRepositoryImpl(CatLocalDataSource(isar));
 });
 
 /// 日志仓库 Provider

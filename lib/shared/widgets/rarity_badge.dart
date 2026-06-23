@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../features/cat/domain/enums/rarity.dart';
+
 /// 稀有度徽章组件
 /// 展示猫咪的稀有度等级，支持多种样式
 class RarityBadge extends StatelessWidget {
@@ -317,17 +319,4 @@ class RarityProgressBar extends StatelessWidget {
   }
 }
 
-/// 稀有度枚举（与 domain/rarity.dart 保持一致）
-enum Rarity {
-  common('普通', 'Common', 0xFF9E9E9E),
-  uncommon('稀有', 'Uncommon', 0xFF4CAF50),
-  rare('罕见', 'Rare', 0xFF2196F3),
-  epic('史诗', 'Epic', 0xFF9C27B0),
-  legendary('传说', 'Legendary', 0xFFFF9800);
 
-  final String displayName;
-  final String displayNameEn;
-  final int colorValue;
-
-  const Rarity(this.displayName, this.displayNameEn, this.colorValue);
-}

@@ -148,7 +148,7 @@ class DisclaimerDialog extends StatelessWidget {
 
             // 复选框确认
             if (showCheckbox) ...[
-              const _CheckboxConfirmation(),
+              _CheckboxConfirmation(),
               const SizedBox(height: 16),
             ],
 
