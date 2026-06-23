@@ -189,7 +189,7 @@ class _StepCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: Theme.of(context).textography.bodySmall,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

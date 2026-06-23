@@ -1,16 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/cat_entity.dart';
 import '../../domain/repositories/cat_repository.dart';
+import '../../data/datasources/cat_local_datasource.dart';
 import '../../data/repositories/cat_repository_impl.dart';
+import '../../../core/database/isar_database.dart';
 
-// ====== 仓库 Provider ======
+// ====== 数据源 & 仓库 Provider ======
+
+/// 猫咪本地数据源 Provider
+///
+/// 封装 Isar 数据库操作，为 Repository 层提供 CRUD 接口。
+/// 使用 .singleton 确保全局只有一个数据源实例。
+final catLocalDataSourceProvider = Provider<CatLocalDataSource>((ref) {
+  return CatLocalDataSource(IsarDatabase.instance);
+});
 
 /// 猫咪仓库 Provider
 ///
 /// 提供 CatRepository 的单例实例，供所有 Cat 相关 Provider 使用。
-/// 在实际项目中，此 Provider 应在基础设施层或通过依赖注入配置。
+/// 依赖 catLocalDataSourceProvider 获取数据源。
 final catRepositoryProvider = Provider<CatRepository>((ref) {
-  return CatRepositoryImpl(IsarDatabase.instance);
+  final datasource = ref.watch(catLocalDataSourceProvider);
+  return CatRepositoryImpl(datasource);
 });
 
 // ====== 猫咪列表 Provider ======

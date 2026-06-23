@@ -1,22 +1,32 @@
-import 'package:isar/isar.dart';
-
-import '../../../core/database/schemas/cat_schema.dart';
+import 'datasources/cat_local_datasource.dart';
 import '../../domain/entities/cat_entity.dart';
 import '../../domain/repositories/cat_repository.dart';
 
-/// 猫咪仓库实现 — 基于 Isar 数据库
+/// 猫咪仓库实现 — 基于 [CatLocalDataSource]
+///
+/// 该实现通过 [CatLocalDataSource] 与 Isar 数据库交互，
+/// 将数据源层的异常转换为仓库层的领域异常。
+///
+/// 架构分层：
+/// - Domain 层（CatRepository 接口）← 本文件（CatRepositoryImpl）
+/// - Data 层（CatLocalDataSource）← 封装 Isar 操作
+/// - Schema 层（CatSchema）← Isar 数据库模型
+///
+/// 所有数据操作异常都会被捕获并转换为 [CatRepositoryException]，
+/// 以便上层（UseCase / Presentation）统一处理错误。
 class CatRepositoryImpl implements CatRepository {
-  final Isar _isar;
-  CatRepositoryImpl(this._isar);
+  /// 猫咪本地数据源
+  final CatLocalDataSource _datasource;
+
+  /// 构造函数，注入本地数据源实例
+  CatRepositoryImpl(this._datasource);
 
   @override
   Future<List<CatEntity>> getAllCats({bool includeDeleted = false}) async {
     try {
-      final models = includeDeleted
-          ? await _isar.catSchemas.where().sortByLastSeenAtDesc().findAll()
-          : await _isar.catSchemas.filter().isDeletedEqualTo(false).sortByLastSeenAtDesc().findAll();
-      return models.map((m) => _toEntity(m)).toList();
+      return await _datasource.getAllCats(includeDeleted: includeDeleted);
     } catch (e) {
+      if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('获取猫咪列表失败: $e');
     }
   }
@@ -24,9 +34,9 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<CatEntity?> getCatById(int id) async {
     try {
-      final model = await _isar.catSchemas.filter().idEqualTo(id).findFirst();
-      return model != null ? _toEntity(model) : null;
+      return await _datasource.getCatById(id);
     } catch (e) {
+      if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('获取猫咪详情失败 (id=$id): $e');
     }
   }
@@ -34,22 +44,9 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<List<CatEntity>> searchCats(String query) async {
     try {
-      if (query.trim().isEmpty) return getAllCats();
-      final keyword = query.trim().toLowerCase();
-      final models = await _isar.catSchemas
-          .filter()
-          .isDeletedEqualTo(false)
-          .and()
-          .group((q) => q
-              .nicknameContains(keyword, caseSensitive: false)
-              .or()
-              .locationHintContains(keyword, caseSensitive: false)
-              .or()
-              .notesContains(keyword, caseSensitive: false))
-          .sortByLastSeenAtDesc()
-          .findAll();
-      return models.map((m) => _toEntity(m)).toList();
+      return await _datasource.searchCats(query);
     } catch (e) {
+      if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('搜索猫咪失败: $e');
     }
   }
@@ -57,9 +54,9 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<int> getCatCount({bool includeDeleted = false}) async {
     try {
-      if (includeDeleted) return await _isar.catSchemas.count();
-      return await _isar.catSchemas.filter().isDeletedEqualTo(false).count();
+      return await _datasource.getCatCount(includeDeleted: includeDeleted);
     } catch (e) {
+      if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('获取猫咪总数失败: $e');
     }
   }
@@ -67,34 +64,9 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<int> addCat(CatEntity cat) async {
     try {
-      final now = DateTime.now();
-      final model = CatSchema()
-        ..nickname = cat.nickname
-        ..breed = cat.breed
-        ..color = cat.color
-        ..gender = cat.gender
-        ..estimatedAgeMonths = cat.estimatedAgeMonths
-        ..tags = List<String>.from(cat.tags)
-        ..tnrStatus = cat.tnrStatus
-        ..rarity = cat.rarity
-        ..locationHint = cat.locationHint
-        ..latitude = cat.latitude
-        ..longitude = cat.longitude
-        ..firstSeenAt = cat.firstSeenAt
-        ..lastSeenAt = cat.lastSeenAt
-        ..createdAt = now
-        ..updatedAt = now
-        ..notes = cat.notes
-        ..feedReminderHour = cat.feedReminderHour
-        ..feedReminderMinute = cat.feedReminderMinute
-        ..healthReminderHour = cat.healthReminderHour
-        ..healthReminderMinute = cat.healthReminderMinute
-        ..reminderEnabled = cat.reminderEnabled;
-
-      return await _isar.writeTxn(() async {
-        return await _isar.catSchemas.put(model);
-      });
+      return await _datasource.addCat(cat);
     } catch (e) {
+      if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('添加猫咪失败: $e');
     }
   }
@@ -102,35 +74,7 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<bool> updateCat(CatEntity cat) async {
     try {
-      final existing = await _isar.catSchemas.filter().idEqualTo(cat.id).findFirst();
-      if (existing == null) throw CatRepositoryException('找不到 ID=${cat.id} 的猫咪');
-
-      existing
-        ..nickname = cat.nickname
-        ..breed = cat.breed
-        ..color = cat.color
-        ..gender = cat.gender
-        ..estimatedAgeMonths = cat.estimatedAgeMonths
-        ..tags = List<String>.from(cat.tags)
-        ..tnrStatus = cat.tnrStatus
-        ..rarity = cat.rarity
-        ..locationHint = cat.locationHint
-        ..latitude = cat.latitude
-        ..longitude = cat.longitude
-        ..lastSeenAt = cat.lastSeenAt
-        ..updatedAt = DateTime.now()
-        ..isDeleted = cat.isDeleted
-        ..notes = cat.notes
-        ..feedReminderHour = cat.feedReminderHour
-        ..feedReminderMinute = cat.feedReminderMinute
-        ..healthReminderHour = cat.healthReminderHour
-        ..healthReminderMinute = cat.healthReminderMinute
-        ..reminderEnabled = cat.reminderEnabled;
-
-      await _isar.writeTxn(() async {
-        await _isar.catSchemas.put(existing);
-      });
-      return true;
+      return await _datasource.updateCat(cat);
     } catch (e) {
       if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('更新猫咪失败: $e');
@@ -140,58 +84,26 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<bool> deleteCat(int id, {bool permanent = false}) async {
     try {
-      final existing = await _isar.catSchemas.filter().idEqualTo(id).findFirst();
-      if (existing == null) throw CatRepositoryException('找不到 ID=$id 的猫咪');
-
-      await _isar.writeTxn(() async {
-        if (permanent) {
-          await _isar.catSchemas.delete(existing.id);
-        } else {
-          existing.isDeleted = true;
-          existing.updatedAt = DateTime.now();
-          await _isar.catSchemas.put(existing);
-        }
-      });
-      return true;
+      return await _datasource.deleteCat(id, permanent: permanent);
     } catch (e) {
       if (e is CatRepositoryException) rethrow;
       throw CatRepositoryException('删除猫咪失败: $e');
     }
   }
-
-  /// CatSchema → CatEntity
-  CatEntity _toEntity(CatSchema m) {
-    return CatEntity(
-      id: m.id,
-      nickname: m.nickname,
-      breed: m.breed,
-      color: m.color,
-      gender: m.gender,
-      estimatedAgeMonths: m.estimatedAgeMonths,
-      tags: m.tags.toList(),
-      tnrStatus: m.tnrStatus,
-      rarity: m.rarity,
-      locationHint: m.locationHint,
-      latitude: m.latitude,
-      longitude: m.longitude,
-      firstSeenAt: m.firstSeenAt,
-      lastSeenAt: m.lastSeenAt,
-      createdAt: m.createdAt,
-      updatedAt: m.updatedAt,
-      isDeleted: m.isDeleted,
-      notes: m.notes,
-      feedReminderHour: m.feedReminderHour,
-      feedReminderMinute: m.feedReminderMinute,
-      healthReminderHour: m.healthReminderHour,
-      healthReminderMinute: m.healthReminderMinute,
-      reminderEnabled: m.reminderEnabled,
-    );
-  }
 }
 
+/// 仓库层异常
+///
+/// 当仓库操作失败时抛出此异常。
+/// 该异常封装了底层（数据源层）的错误信息，
+/// 为上层提供统一的错误处理接口。
 class CatRepositoryException implements Exception {
+  /// 异常描述信息
   final String message;
+
+  /// 构造函数
   const CatRepositoryException(this.message);
+
   @override
   String toString() => 'CatRepositoryException: $message';
 }
