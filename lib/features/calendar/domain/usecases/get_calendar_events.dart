@@ -111,14 +111,14 @@ class GetCalendarEvents {
         ? await collection
             .filter()
             .catIdEqualTo(catId)
-            .recordedAtAbove(startDate)
-            .recordedAtBelow(endDate)
+            .recordedAtGreaterThan(startDate)
+            .recordedAtLessThan(endDate)
             .sortByRecordedAtDesc()
             .findAll()
         : await collection
             .filter()
-            .recordedAtAbove(startDate)
-            .recordedAtBelow(endDate)
+            .recordedAtGreaterThan(startDate)
+            .recordedAtLessThan(endDate)
             .sortByRecordedAtDesc()
             .findAll();
 
@@ -160,13 +160,13 @@ class GetCalendarEvents {
         ? await collection
             .filter()
             .catIdEqualTo(catId)
-            .recordedAtAbove(startDate)
-            .recordedAtBelow(endDate)
+            .recordedAtGreaterThan(startDate)
+            .recordedAtLessThan(endDate)
             .findAll()
         : await collection
             .filter()
-            .recordedAtAbove(startDate)
-            .recordedAtBelow(endDate)
+            .recordedAtGreaterThan(startDate)
+            .recordedAtLessThan(endDate)
             .findAll();
 
     return logs
