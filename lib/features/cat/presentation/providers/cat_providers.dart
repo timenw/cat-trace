@@ -3,7 +3,7 @@ import '../../domain/entities/cat_entity.dart';
 import '../../domain/repositories/cat_repository.dart';
 import '../../data/datasources/cat_local_datasource.dart';
 import '../../data/repositories/cat_repository_impl.dart';
-import '../../../core/database/isar_database.dart';
+import '../../../../core/database/isar_database.dart';
 
 // ====== 数据源 & 仓库 Provider ======
 

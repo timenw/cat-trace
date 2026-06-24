@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../domain/enums/health_status.dart';
+import '../../domain/enums/health_status.dart';
 
 /// 健康观察组件
 class HealthObservations extends StatefulWidget {

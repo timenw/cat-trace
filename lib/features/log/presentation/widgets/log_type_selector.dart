@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../domain/enums/log_type.dart';
+import '../../domain/enums/log_type.dart';
 
 /// 日志类型选择器组件
 ///

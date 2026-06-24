@@ -11,11 +11,11 @@ import '../../../cat/presentation/providers/cat_providers.dart';
 import '../../../calendar/presentation/pages/calendar_page.dart';
 import '../../../achievement/presentation/pages/achievement_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
-import '../domain/usecases/get_home_stats.dart';
-import '../presentation/widgets/collection_stats.dart';
-import '../presentation/widgets/home_search_bar.dart';
-import '../presentation/widgets/quick_actions.dart';
-import '../presentation/widgets/recent_cats.dart';
+import '../../domain/usecases/get_home_stats.dart';
+import '../../presentation/widgets/collection_stats.dart';
+import '../../presentation/widgets/home_search_bar.dart';
+import '../../presentation/widgets/quick_actions.dart';
+import '../../presentation/widgets/recent_cats.dart';
 
 /// 首页 — 包含底部导航栏
 ///

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../domain/enums/feed_type.dart';
-import '../../../domain/enums/feed_amount.dart';
+import '../../domain/enums/feed_type.dart';
+import '../../domain/entities/log_entity.dart' show FeedAmount;
 
 /// 投喂模板组件 — 快速记录投喂
 class FeedTemplate extends ConsumerStatefulWidget {
