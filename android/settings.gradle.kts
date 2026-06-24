@@ -23,15 +23,3 @@ plugins {
 }
 
 include(":app")
-
-// Inject namespace for plugins that don't specify one (required by AGP 8.x)
-subprojects {
-    afterEvaluate {
-        val android = extensions.findByName("android")
-        if (android != null && android is com.android.build.gradle.BaseExtension) {
-            if (android.namespace == null) {
-                android.namespace = "com.cattrace.${project.name.replace("-", "_")}"
-            }
-        }
-    }
-}

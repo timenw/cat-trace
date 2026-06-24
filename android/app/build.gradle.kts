@@ -57,3 +57,16 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
+
+// AGP 8.x requires namespace for all modules; inject for plugins that lack it
+gradle.projectsEvaluated {
+    rootProject.subprojects.forEach { sub ->
+        sub.pluginManager.withPlugin("com.android.library") {
+            sub.extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
+                if (namespace == null) {
+                    namespace = "com.cattrace.${sub.name.replace("-", "_")}"
+                }
+            }
+        }
+    }
+}
