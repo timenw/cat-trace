@@ -46,26 +46,35 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Fix isar_flutter_libs for AGP 8.x
+      - name: Patch isar_flutter_libs
         run: |
           PUB="${PUB_CACHE:-$HOME/.pub-cache}"
           DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
-          # Fix AndroidManifest.xml: remove package attr and lStar attr
           MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
           if [ -n "$MF" ]; then
             sed -i 's/ package="[^"]*"//' "$MF"
-            sed -i 's/ android:attr\/lStar="[^"]*"//' "$MF"
             sed -i '/android:attr\/lStar/d' "$MF"
           fi
-          # Fix build.gradle: add namespace
-          BG=$(find "$DIR" -name 'build.gradle' | head -1)
-          if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
-            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
-          fi
-          KT=$(find "$DIR" -name 'build.gradle.kts' | head -1)
-          if [ -n "$KT" ] && ! grep -q namespace "$KT"; then
-            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
-          fi
+          for BG in $(find "$DIR" -name 'build.gradle'); do
+            if ! grep -q namespace "$BG"; then
+              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
+            fi
+            if grep -q 'compileSdk'; then
+              sed -i 's/compileSdk [0-9]*/compileSdk 34/' "$BG"
+            else
+              sed -i '/^android {/a\    compileSdk 34' "$BG"
+            fi
+          done
+          for KT in $(find "$DIR" -name 'build.gradle.kts'); do
+            if ! grep -q namespace "$KT"; then
+              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
+            fi
+            if grep -q 'compileSdk'; then
+              sed -i 's/compileSdk = [0-9]*/compileSdk = 34/' "$KT"
+            else
+              sed -i '/^android {/a\    compileSdk = 34' "$KT"
+            fi
+          done
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
@@ -85,24 +94,35 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Fix isar_flutter_libs for AGP 8.x
+      - name: Patch isar_flutter_libs
         run: |
           PUB="${PUB_CACHE:-$HOME/.pub-cache}"
           DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
           MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
           if [ -n "$MF" ]; then
             sed -i 's/ package="[^"]*"//' "$MF"
-            sed -i 's/ android:attr\/lStar="[^"]*"//' "$MF"
             sed -i '/android:attr\/lStar/d' "$MF"
           fi
-          BG=$(find "$DIR" -name 'build.gradle' | head -1)
-          if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
-            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
-          fi
-          KT=$(find "$DIR" -name 'build.gradle.kts' | head -1)
-          if [ -n "$KT" ] && ! grep -q namespace "$KT"; then
-            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
-          fi
+          for BG in $(find "$DIR" -name 'build.gradle'); do
+            if ! grep -q namespace "$BG"; then
+              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
+            fi
+            if grep -q 'compileSdk'; then
+              sed -i 's/compileSdk [0-9]*/compileSdk 34/' "$BG"
+            else
+              sed -i '/^android {/a\    compileSdk 34' "$BG"
+            fi
+          done
+          for KT in $(find "$DIR" -name 'build.gradle.kts'); do
+            if ! grep -q namespace "$KT"; then
+              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
+            fi
+            if grep -q 'compileSdk'; then
+              sed -i 's/compileSdk = [0-9]*/compileSdk = 34/' "$KT"
+            else
+              sed -i '/^android {/a\    compileSdk = 34' "$KT"
+            fi
+          done
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build apk --release
       - name: Rename APK
