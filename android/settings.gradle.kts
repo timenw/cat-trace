@@ -24,12 +24,13 @@ plugins {
 
 include(":app")
 
-// AGP 8.x requires namespace for all modules; inject before configuration
-gradle.beforeProject { project ->
-    project.pluginManager.withPlugin("com.android.library") {
-        project.extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
-            if (namespace == null) {
-                namespace = "com.cattrace.${project.name.replace("-", "_")}"
+gradle.settingsEvaluated {
+    rootProject.subprojects.forEach { sub ->
+        sub.pluginManager.withPlugin("com.android.library") {
+            sub.extensions.findByType(com.android.build.gradle.BaseExtension::class.java)?.apply {
+                if (namespace == null) {
+                    namespace = "com.cattrace.${sub.name.replace("-", "_")}"
+                }
             }
         }
     }
