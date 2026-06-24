@@ -46,6 +46,33 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Fix isar_flutter_libs namespace for AGP 8.x
+        run: |
+          # Find isar_flutter_libs build.gradle (or .kts) in pub cache and add namespace
+          ISAR_GRADLE=$(find /root/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle" 2>/dev/null | head -1)
+          ISAR_KOTLIN=$(find /root/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle.kts" 2>/dev/null | head -1)
+          echo "Checking: ISAR_GRADLE=$ISAR_GRADLE ISAR_KOTLIN=$ISAR_KOTLIN"
+          if [ -n "$ISAR_GRADLE" ]; then
+            if ! grep -qi "namespace" "$ISAR_GRADLE"; then
+              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$ISAR_GRADLE"
+              echo "Added namespace (Groovy) to $ISAR_GRADLE"
+            else
+              echo "Namespace already exists in $ISAR_GRADLE"
+            fi
+          fi
+          if [ -n "$ISAR_KOTLIN" ]; then
+            if ! grep -qi "namespace" "$ISAR_KOTLIN"; then
+              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$ISAR_KOTLIN"
+              echo "Added namespace (Kotlin DSL) to $ISAR_KOTLIN"
+            else
+              echo "Namespace already exists in $ISAR_KOTLIN"
+            fi
+          fi
+          if [ -z "$ISAR_GRADLE" ] && [ -z "$ISAR_KOTLIN" ]; then
+            echo "isar_flutter_libs build file not found!"
+            find /root/.pub-cache -path "*/isar*" -name "*.gradle" 2>/dev/null
+            find /root/.pub-cache -path "*/isar*" -name "*.kts" 2>/dev/null
+          fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
@@ -64,6 +91,20 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
       - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Fix isar_flutter_libs namespace for AGP 8.x
+        run: |
+          # Remove stale isar_flutter_libs from pub cache (force re-download with fixed namespace)
+          rm -rf /root/.pub-cache/hosted/*/isar_flutter_libs*
+          flutter pub get
+          ISAR_GRADLE=$(find /root/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle" 2>/dev/null | head -1)
+          ISAR_KOTLIN=$(find /root/.pub-cache -path "*/isar_flutter_libs*/android/build.gradle.kts" 2>/dev/null | head -1)
+          if [ -n "$ISAR_GRADLE" ] && ! grep -qi "namespace" "$ISAR_GRADLE"; then
+            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$ISAR_GRADLE"
+          fi
+          if [ -n "$ISAR_KOTLIN" ] && ! grep -qi "namespace" "$ISAR_KOTLIN"; then
+            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$ISAR_KOTLIN"
+          fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build apk --release
       - name: Rename APK

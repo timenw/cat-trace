@@ -23,15 +23,3 @@ plugins {
 }
 
 include(":app")
-
-gradle.settingsEvaluated {
-    rootProject.subprojects.forEach { sub ->
-        sub.pluginManager.withPlugin("com.android.library") {
-            sub.extensions.findByType(com.android.build.gradle.BaseExtension::class.java)?.apply {
-                if (namespace == null) {
-                    namespace = "com.cattrace.${sub.name.replace("-", "_")}"
-                }
-            }
-        }
-    }
-}
