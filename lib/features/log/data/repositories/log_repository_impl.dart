@@ -97,6 +97,35 @@ class LogRepositoryImpl implements LogRepository {
     }
   }
 
+  @override
+  Future<bool> updateLog(LogEntity log) async {
+    try {
+      final schema = await _isar.collection<LogSchema>().filter().idEqualTo(log.id).findFirst();
+      if (schema == null) return false;
+      await _isar.writeTxn(() async {
+        schema.catId = log.catId;
+        schema.type = log.type;
+        schema.recordedAt = log.recordedAt;
+        schema.feedType = log.feedType ?? FeedType.other;
+        schema.feedAmount = log.feedAmount ?? FeedAmount.medium;
+        schema.healthStatus = log.healthStatus ?? HealthStatus.good;
+        schema.spiritScore = log.spiritScore;
+        schema.furScore = log.furScore;
+        schema.hasInjury = log.hasInjury;
+        schema.injuryDescription = log.injuryDescription;
+        schema.weightEstimate = log.weightEstimate;
+        schema.notes = log.notes;
+        schema.locationHint = log.locationHint;
+        schema.latitude = log.latitude;
+        schema.longitude = log.longitude;
+        await _isar.collection<LogSchema>().put(schema);
+      });
+      return true;
+    } catch (e) {
+      throw LogRepositoryException('更新日志失败: $e');
+    }
+  }
+
   Future<void> deleteLogsByCatId(int catId) async {
     try {
       final logs = await _isar.collection<LogSchema>().filter().catIdEqualTo(catId).findAll();

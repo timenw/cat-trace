@@ -3,30 +3,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/achievement_entity.dart';
-import '../../domain/usecases/get_achievements.dart';
-import '../../domain/usecases/unlock_achievement.dart';
+import '../../domain/usecases/get_achievements.dart' as get_achievements_uc;
+import '../../domain/usecases/unlock_achievement.dart' as unlock_achievements_uc;
 import '../../../../core/database/isar_database.dart';
 import '../../../../core/database/schemas/achievement_schema.dart';
 
 part 'achievement_providers.g.dart';
 
 // ============================================================================
-// 数据源 & 仓库 Provider
+// 仓库实现 — 同时满足两个 UseCase 的接口需求
 // ============================================================================
 
-/// 成就数据提供者 — 同时实现 AchievementRepository 接口
-class AchievementDataProvider implements AchievementRepository {
+/// 成就数据提供者 — 实现两个 UseCase 的 Repository 接口
+class AchievementDataProvider implements get_achievements_uc.AchievementRepository, unlock_achievements_uc.AchievementRepository {
   final Isar _isar;
 
   AchievementDataProvider(this._isar);
 
-  /// 获取所有成就
+  // --- get_achievements_uc.AchievementRepository 方法 ---
+  @override
   Future<List<AchievementEntity>> getAllAchievements() async {
     final schemas = await _isar.collection<AchievementSchema>().where().findAll();
     return schemas.map(_toEntity).toList();
   }
 
-  /// 按分类获取成就
+  @override
   Future<List<AchievementEntity>> getAchievementsByCategory(
       AchievementCategory category) async {
     final schemas = await _isar.collection<AchievementSchema>()
@@ -36,7 +37,7 @@ class AchievementDataProvider implements AchievementRepository {
     return schemas.map(_toEntity).toList();
   }
 
-  /// 获取已解锁的成就
+  @override
   Future<List<AchievementEntity>> getUnlockedAchievements() async {
     final schemas = await _isar.collection<AchievementSchema>()
         .filter()
@@ -46,7 +47,7 @@ class AchievementDataProvider implements AchievementRepository {
     return schemas.map(_toEntity).toList();
   }
 
-  /// 根据 achievementId 获取单个成就
+  @override
   Future<AchievementEntity?> getAchievementById(String achievementId) async {
     final schema = await _isar.collection<AchievementSchema>()
         .filter()
@@ -55,7 +56,8 @@ class AchievementDataProvider implements AchievementRepository {
     return schema == null ? null : _toEntity(schema);
   }
 
-  /// 更新成就进度
+  // --- unlock_achievements_uc.AchievementRepository 方法 ---
+  @override
   Future<void> updateAchievementProgress(String achievementId, int progress) async {
     final schema = await _isar.collection<AchievementSchema>()
         .filter()
@@ -70,7 +72,7 @@ class AchievementDataProvider implements AchievementRepository {
     }
   }
 
-  /// 解锁成就
+  @override
   Future<bool> unlockAchievement(String achievementId) async {
     final schema = await _isar.collection<AchievementSchema>()
         .filter()
@@ -107,21 +109,29 @@ class AchievementDataProvider implements AchievementRepository {
 }
 
 // ============================================================================
+// 数据源 Provider
+// ============================================================================
+
+final _achievementDataProvider = Provider<AchievementDataProvider>((ref) {
+  return AchievementDataProvider(IsarDatabase.instance);
+});
+
+// ============================================================================
 // UseCase Provider
 // ============================================================================
 
 /// 获取成就列表 UseCase Provider
 @riverpod
-GetAchievements getAchievements(GetAchievementsRef ref) {
-  final dataProvider = ref.watch(achievementDataProvider);
-  return GetAchievements(dataProvider);
+get_achievements_uc.GetAchievements getAchievements(GetAchievementsRef ref) {
+  final dataProvider = ref.watch(_achievementDataProvider);
+  return get_achievements_uc.GetAchievements(dataProvider);
 }
 
 /// 解锁成就 UseCase Provider
 @riverpod
-UnlockAchievement unlockAchievement(UnlockAchievementRef ref) {
-  final dataProvider = ref.watch(achievementDataProvider);
-  return UnlockAchievement(dataProvider);
+unlock_achievements_uc.UnlockAchievement unlockAchievement(UnlockAchievementRef ref) {
+  final dataProvider = ref.watch(_achievementDataProvider);
+  return unlock_achievements_uc.UnlockAchievement(dataProvider);
 }
 
 // ============================================================================

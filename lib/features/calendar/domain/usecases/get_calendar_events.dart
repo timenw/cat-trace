@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/database/isar_database.dart';
-import '../../../../core/database/schemas/log_schema.dart' show LogSchema;
+import '../../../../core/database/schemas/log_schema.dart';
 import '../../../../features/log/domain/entities/log_entity.dart';
 import '../../../../features/log/domain/enums/log_type.dart';
 
@@ -104,22 +104,23 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
-    final filter = _isar.collection<LogSchema>().filter();
-
-    // 应用猫咪筛选
-    final filtered = catId != null
-        ? filter.catIdEqualTo(catId!)
-        : filter;
-
-    // 应用日期范围筛选
-    final dateFiltered = filtered
-        .recordedAtGreaterThan(startDate.subtract(const Duration(milliseconds: 1)))
-        .recordedAtLessThan(endDate.add(const Duration(milliseconds: 1)));
+    final collection = _isar.collection<LogSchema>();
 
     // 获取该日期范围内的日志
-    final logs = await dateFiltered
-        .sortByRecordedAtDesc()
-        .findAll();
+    final logs = catId != null
+        ? await collection
+            .filter()
+            .catIdEqualTo(catId)
+            .recordedAtAbove(startDate)
+            .recordedAtBelow(endDate)
+            .sortByRecordedAtDesc()
+            .findAll()
+        : await collection
+            .filter()
+            .recordedAtAbove(startDate)
+            .recordedAtBelow(endDate)
+            .sortByRecordedAtDesc()
+            .findAll();
 
     return logs.map(CalendarEvent.fromSchema).toList();
   }
@@ -153,17 +154,20 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
-    final filter = _isar.collection<LogSchema>().filter();
+    final collection = _isar.collection<LogSchema>();
 
-    final filtered = catId != null
-        ? filter.catIdEqualTo(catId!)
-        : filter;
-
-    final dateFiltered = filtered
-        .recordedAtGreaterThan(startDate.subtract(const Duration(milliseconds: 1)))
-        .recordedAtLessThan(endDate.add(const Duration(milliseconds: 1)));
-
-    final logs = await dateFiltered.findAll();
+    final logs = catId != null
+        ? await collection
+            .filter()
+            .catIdEqualTo(catId)
+            .recordedAtAbove(startDate)
+            .recordedAtBelow(endDate)
+            .findAll()
+        : await collection
+            .filter()
+            .recordedAtAbove(startDate)
+            .recordedAtBelow(endDate)
+            .findAll();
 
     return logs
         .map((log) => '${log.recordedAt.year}-${log.recordedAt.month.toString().padLeft(2, '0')}-${log.recordedAt.day.toString().padLeft(2, '0')}')
