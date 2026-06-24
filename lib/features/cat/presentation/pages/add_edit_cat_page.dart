@@ -32,7 +32,9 @@ class _AddEditCatPageState extends ConsumerState<AddEditCatPage> {
   String _selectedColor = 'unknown';
   String _selectedGender = 'unknown';
   String _selectedTnrStatus = 'none';
+  // ignore: unused_field
   DateTime _firstSeenAt = DateTime.now();
+  // ignore: unused_field
   DateTime _lastSeenAt = DateTime.now();
 
   bool _isLoading = false;
