@@ -55,24 +55,18 @@ jobs:
             sed -i 's/ package="[^"]*"//' "$MF"
             sed -i '/android:attr\/lStar/d' "$MF"
           fi
-          for BG in $(find "$DIR" -name 'build.gradle'); do
-            if ! grep -q namespace "$BG"; then
-              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
+          for BF in $(find "$DIR" -name 'build.gradle' -o -name 'build.gradle.kts'); do
+            if ! grep -q namespace "$BF"; then
+              if echo "$BF" | grep -q '\.kts$'; then
+                sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$BF"
+              else
+                sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BF"
+              fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [0-9]*/compileSdk 34/' "$BG"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 34' "$BG"
-            fi
-          done
-          for KT in $(find "$DIR" -name 'build.gradle.kts'); do
-            if ! grep -q namespace "$KT"; then
-              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
-            fi
-            if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk = [0-9]*/compileSdk = 34/' "$KT"
-            else
-              sed -i '/^android {/a\    compileSdk = 34' "$KT"
+              sed -i '/^android {/a\    compileSdk 34' "$BF"
             fi
           done
       - run: flutter build apk --debug
@@ -103,24 +97,18 @@ jobs:
             sed -i 's/ package="[^"]*"//' "$MF"
             sed -i '/android:attr\/lStar/d' "$MF"
           fi
-          for BG in $(find "$DIR" -name 'build.gradle'); do
-            if ! grep -q namespace "$BG"; then
-              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
+          for BF in $(find "$DIR" -name 'build.gradle' -o -name 'build.gradle.kts'); do
+            if ! grep -q namespace "$BF"; then
+              if echo "$BF" | grep -q '\.kts$'; then
+                sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$BF"
+              else
+                sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BF"
+              fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [0-9]*/compileSdk 34/' "$BG"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 34' "$BG"
-            fi
-          done
-          for KT in $(find "$DIR" -name 'build.gradle.kts'); do
-            if ! grep -q namespace "$KT"; then
-              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
-            fi
-            if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk = [0-9]*/compileSdk = 34/' "$KT"
-            else
-              sed -i '/^android {/a\    compileSdk = 34' "$KT"
+              sed -i '/^android {/a\    compileSdk 34' "$BF"
             fi
           done
       - run: dart run build_runner build --delete-conflicting-outputs
