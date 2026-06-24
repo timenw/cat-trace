@@ -46,31 +46,21 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Fix isar_flutter_libs namespace for AGP 8.x
+      - name: Fix isar_flutter_libs for AGP 8.x
         run: |
-            PUB_CACHE_DIR="${PUB_CACHE:-$HOME/.pub-cache}"
-            ISAR_DIR=$(find "$PUB_CACHE_DIR" -type d -name "isar_flutter_libs-*" 2>/dev/null | head -1)
-            echo "ISAR_DIR=$ISAR_DIR"
-
-            # Step 1: Remove package attribute from AndroidManifest.xml (AGP 8.x doesn't support it)
-            ISAR_MANIFEST=$(find "$ISAR_DIR" -path "*/android/src/main/AndroidManifest.xml" 2>/dev/null | head -1)
-            if [ -n "$ISAR_MANIFEST" ]; then
-              echo "Removing package attribute from $ISAR_MANIFEST"
-              sed -i 's/ package="[^"]*"//' "$ISAR_MANIFEST"
-            fi
-
-            # Step 2: Add namespace to build.gradle or build.gradle.kts
-            ISAR_GRADLE=$(find "$ISAR_DIR" -path "*/android/build.gradle" 2>/dev/null | head -1)
-            ISAR_KOTLIN=$(find "$ISAR_DIR" -path "*/android/build.gradle.kts" 2>/dev/null | head -1)
-            if [ -n "$ISAR_GRADLE" ] && ! grep -qi "namespace" "$ISAR_GRADLE"; then
-              sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$ISAR_GRADLE"
-              echo "Added namespace (Groovy) to $ISAR_GRADLE"
-            fi
-            if [ -n "$ISAR_KOTLIN" ] && ! grep -qi "namespace" "$ISAR_KOTLIN"; then
-              sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$ISAR_KOTLIN"
-              echo "Added namespace (Kotlin DSL) to $ISAR_KOTLIN"
-            fi
-        - run: flutter build apk --debug
+          PUB="${PUB_CACHE:-$HOME/.pub-cache}"
+          DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
+          MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
+          if [ -n "$MF" ]; then sed -i 's/ package="[^"]*"//' "$MF"; fi
+          BG=$(find "$DIR" -name 'build.gradle' | head -1)
+          if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
+            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
+          fi
+          KT=$(find "$DIR" -name 'build.gradle.kts' | head -1)
+          if [ -n "$KT" ] && ! grep -q namespace "$KT"; then
+            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
+          fi
+      - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
           name: cat-trace-debug
@@ -89,21 +79,19 @@ jobs:
           channel: 'stable'
       - run: flutter pub get
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Fix isar_flutter_libs namespace for AGP 8.x
+      - name: Fix isar_flutter_libs for AGP 8.x
         run: |
-          PUB_CACHE_DIR="${PUB_CACHE:-$HOME/.pub-cache}"
-          ISAR_DIR=$(find "$PUB_CACHE_DIR" -type d -name "isar_flutter_libs-*" 2>/dev/null | head -1)
-          ISAR_MANIFEST=$(find "$ISAR_DIR" -path "*/android/src/main/AndroidManifest.xml" 2>/dev/null | head -1)
-          if [ -n "$ISAR_MANIFEST" ]; then
-            sed -i 's/ package="[^"]*"//' "$ISAR_MANIFEST"
+          PUB="${PUB_CACHE:-$HOME/.pub-cache}"
+          DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
+          MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
+          if [ -n "$MF" ]; then sed -i 's/ package="[^"]*"//' "$MF"; fi
+          BG=$(find "$DIR" -name 'build.gradle' | head -1)
+          if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
+            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
           fi
-          ISAR_GRADLE=$(find "$ISAR_DIR" -path "*/android/build.gradle" 2>/dev/null | head -1)
-          ISAR_KOTLIN=$(find "$ISAR_DIR" -path "*/android/build.gradle.kts" 2>/dev/null | head -1)
-          if [ -n "$ISAR_GRADLE" ] && ! grep -qi "namespace" "$ISAR_GRADLE"; then
-            sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$ISAR_GRADLE"
-          fi
-          if [ -n "$ISAR_KOTLIN" ] && ! grep -qi "namespace" "$ISAR_KOTLIN"; then
-            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$ISAR_KOTLIN"
+          KT=$(find "$DIR" -name 'build.gradle.kts' | head -1)
+          if [ -n "$KT" ] && ! grep -q namespace "$KT"; then
+            sed -i '/^android {/a\    namespace = "com.cattrace.isar_flutter_libs"' "$KT"
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build apk --release
