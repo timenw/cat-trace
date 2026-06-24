@@ -86,7 +86,7 @@ flutter:
     - assets/animations/
     - assets/fonts/
 
-  fonts:
-    - family: CatTrace
-      fonts:
-        - asset: assets/fonts/CatTraceIcons.ttf
+  # fonts:
+  #   - family: CatTrace
+  #     fonts:
+  #       - asset: assets/fonts/CatTraceIcons.ttf
