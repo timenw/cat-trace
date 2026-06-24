@@ -14,19 +14,8 @@ part 'achievement_providers.g.dart';
 // 数据源 & 仓库 Provider
 // ============================================================================
 
-/// 成就仓库 Provider（基于 Isar 的直接实现）
-///
-/// 不使用传统 repository 模式，而是直接在 Provider 中操作 Isar 数据库，
-/// 因为成就系统是简单的 CRUD + 查询，不需要复杂的抽象层。
-final achievementDataProvider = Provider<AchievementDataProvider>((ref) {
-  return AchievementDataProvider(IsarDatabase.instance);
-});
-
-/// 成就数据提供者
-///
-/// 封装 Isar AchievementSchema 的 CRUD 操作。
-/// 虽然不使用 implements 声明，但此类包含了 AchievementRepository（两个版本）所需的全部方法。
-class AchievementDataProvider {
+/// 成就数据提供者 — 同时实现 AchievementRepository 接口
+class AchievementDataProvider implements AchievementRepository {
   final Isar _isar;
 
   AchievementDataProvider(this._isar);
@@ -42,7 +31,7 @@ class AchievementDataProvider {
       AchievementCategory category) async {
     final schemas = await _isar.collection<AchievementSchema>()
         .filter()
-        .categoryEqualTo(category.name)
+        .categoryEqualTo(category)
         .findAll();
     return schemas.map(_toEntity).toList();
   }
@@ -76,7 +65,7 @@ class AchievementDataProvider {
       await _isar.writeTxn(() async {
         schema.progress = progress;
         schema.target = progress > schema.target ? progress : schema.target;
-        await _isar.put(schema);
+        await _isar.collection<AchievementSchema>().put(schema);
       });
     }
   }
@@ -91,7 +80,7 @@ class AchievementDataProvider {
       await _isar.writeTxn(() async {
         schema.isUnlocked = true;
         schema.unlockedAt = DateTime.now();
-        await _isar.put(schema);
+        await _isar.collection<AchievementSchema>().put(schema);
       });
       return true;
     }
@@ -140,8 +129,6 @@ UnlockAchievement unlockAchievement(UnlockAchievementRef ref) {
 // ============================================================================
 
 /// 成就列表 FutureProvider
-///
-/// 加载所有成就数据，用于成就页面展示。
 final achievementsProvider =
     FutureProvider<List<AchievementEntity>>((ref) async {
   final usecase = ref.watch(getAchievementsProvider);
@@ -170,8 +157,6 @@ final achievementDetailProvider =
 });
 
 /// 解锁成就操作 Provider
-///
-/// 返回一个可调用函数，传入 achievementId 执行解锁。
 final unlockAchievementActionProvider =
     Provider<Future<bool> Function(String)>((ref) {
   final usecase = ref.watch(unlockAchievementProvider);
@@ -179,8 +164,6 @@ final unlockAchievementActionProvider =
 });
 
 /// 增加成就进度操作 Provider
-///
-/// 返回一个可调用函数，传入 achievementId 和增量值。
 final incrementAchievementProgressProvider =
     Provider<Future<AchievementEntity?> Function(String, {int increment})>((ref) {
   final usecase = ref.watch(unlockAchievementProvider);

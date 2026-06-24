@@ -4,9 +4,10 @@ import '../../../../core/database/schemas/log_schema.dart';
 import '../../domain/entities/log_entity.dart';
 import '../../domain/enums/feed_type.dart';
 import '../../domain/enums/health_status.dart';
+import '../../domain/repositories/log_repository.dart';
 
 /// 日志仓库实现 — 基于 Isar 数据库
-class LogRepositoryImpl {
+class LogRepositoryImpl implements LogRepository {
   final Isar _isar;
   LogRepositoryImpl(this._isar);
 

@@ -6,7 +6,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../shared/widgets/empty_state.dart';
 import '../../presentation/providers/achievement_providers.dart';
 import '../../presentation/widgets/achievement_card.dart';
-import 'achievement_grid.dart' as grid_widget;
 
 /// 成就页面
 ///
@@ -74,11 +73,20 @@ class AchievementPage extends ConsumerWidget {
               }
               return SliverPadding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                sliver: grid_widget.AchievementGrid(
-                  achievements: list,
-                  onAchievementTap: (achievement) {
-                    _showAchievementDetail(context, achievement);
-                  },
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final achievement = list[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: AchievementCard(
+                          achievement: achievement,
+                          onTap: () => _showAchievementDetail(context, achievement),
+                        ),
+                      );
+                    },
+                    childCount: list.length,
+                  ),
                 ),
               );
             },

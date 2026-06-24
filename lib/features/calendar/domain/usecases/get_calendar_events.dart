@@ -104,19 +104,22 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
+    final filter = _isar.collection<LogSchema>().filter();
+
+    // 应用猫咪筛选
+    final filtered = catId != null
+        ? filter.catIdEqualTo(catId!)
+        : filter;
+
+    // 应用日期范围筛选
+    final dateFiltered = filtered
+        .recordedAtGreaterThan(startDate.subtract(const Duration(milliseconds: 1)))
+        .recordedAtLessThan(endDate.add(const Duration(milliseconds: 1)));
+
     // 获取该日期范围内的日志
-    final logs = catId != null
-        ? await _isar.collection<LogSchema>()
-            .filter()
-            .catIdEqualTo(catId)
-            .recordedAtBetween(startDate, endDate)
-            .sortByRecordedAtDesc()
-            .findAll()
-        : await _isar.collection<LogSchema>()
-            .filter()
-            .recordedAtBetween(startDate, endDate)
-            .sortByRecordedAtDesc()
-            .findAll();
+    final logs = await dateFiltered
+        .sortByRecordedAtDesc()
+        .findAll();
 
     return logs.map(CalendarEvent.fromSchema).toList();
   }
@@ -150,16 +153,17 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
-    final logs = catId != null
-        ? await _isar.collection<LogSchema>()
-            .filter()
-            .catIdEqualTo(catId)
-            .recordedAtBetween(startDate, endDate)
-            .findAll()
-        : await _isar.collection<LogSchema>()
-            .filter()
-            .recordedAtBetween(startDate, endDate)
-            .findAll();
+    final filter = _isar.collection<LogSchema>().filter();
+
+    final filtered = catId != null
+        ? filter.catIdEqualTo(catId!)
+        : filter;
+
+    final dateFiltered = filtered
+        .recordedAtGreaterThan(startDate.subtract(const Duration(milliseconds: 1)))
+        .recordedAtLessThan(endDate.add(const Duration(milliseconds: 1)));
+
+    final logs = await dateFiltered.findAll();
 
     return logs
         .map((log) => '${log.recordedAt.year}-${log.recordedAt.month.toString().padLeft(2, '0')}-${log.recordedAt.day.toString().padLeft(2, '0')}')
