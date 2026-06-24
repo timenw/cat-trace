@@ -29,7 +29,7 @@ class LogRepositoryImpl {
         ..longitude = log.longitude;
 
       return await _isar.writeTxn(() async {
-        return await _isar.logSchemas.put(model);
+        return await _isar.collection<LogSchema>().put(model);
       });
     } catch (e) {
       throw LogRepositoryException('添加日志失败: $e');
@@ -38,7 +38,7 @@ class LogRepositoryImpl {
 
   Future<List<LogEntity>> getLogsByCatId(int catId) async {
     try {
-      final models = await _isar.logSchemas
+      final models = await _isar.collection<LogSchema>()
           .filter()
           .catIdEqualTo(catId)
           .sortByRecordedAtDesc()
@@ -51,7 +51,7 @@ class LogRepositoryImpl {
 
   Future<LogEntity?> getLogById(int id) async {
     try {
-      final model = await _isar.logSchemas.filter().idEqualTo(id).findFirst();
+      final model = await _isar.collection<LogSchema>().filter().idEqualTo(id).findFirst();
       return model != null ? _toEntity(model) : null;
     } catch (e) {
       throw LogRepositoryException('获取日志详情失败: $e');
@@ -60,7 +60,7 @@ class LogRepositoryImpl {
 
   Future<List<LogEntity>> getAllLogs({int? limit, int? offset}) async {
     try {
-      final models = await _isar.logSchemas
+      final models = await _isar.collection<LogSchema>()
           .where()
           .sortByRecordedAtDesc()
           .offset(offset ?? 0)
@@ -75,9 +75,9 @@ class LogRepositoryImpl {
   Future<int> getLogCount({int? catId}) async {
     try {
       if (catId != null) {
-        return await _isar.logSchemas.filter().catIdEqualTo(catId).count();
+        return await _isar.collection<LogSchema>().filter().catIdEqualTo(catId).count();
       }
-      return await _isar.logSchemas.count();
+      return await _isar.collection<LogSchema>().count();
     } catch (e) {
       throw LogRepositoryException('获取日志数量失败: $e');
     }
@@ -86,7 +86,7 @@ class LogRepositoryImpl {
   Future<bool> deleteLog(int id) async {
     try {
       await _isar.writeTxn(() async {
-        await _isar.logSchemas.delete(id);
+        await _isar.collection<LogSchema>().delete(id);
       });
       return true;
     } catch (e) {
@@ -96,10 +96,10 @@ class LogRepositoryImpl {
 
   Future<void> deleteLogsByCatId(int catId) async {
     try {
-      final logs = await _isar.logSchemas.filter().catIdEqualTo(catId).findAll();
+      final logs = await _isar.collection<LogSchema>().filter().catIdEqualTo(catId).findAll();
       await _isar.writeTxn(() async {
         for (final log in logs) {
-          await _isar.logSchemas.delete(log.id);
+          await _isar.collection<LogSchema>().delete(log.id);
         }
       });
     } catch (e) {

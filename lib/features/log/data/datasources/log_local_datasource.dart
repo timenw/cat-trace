@@ -31,7 +31,7 @@ class LogLocalDataSource {
   /// 返回按记录时间降序排列的日志列表。
   /// 如果找不到对应猫咪的日志，返回空列表。
   Future<List<LogEntity>> getLogsByCatId(int catId) async {
-    final models = await _isar.logSchemas
+    final models = await _isar.collection<LogSchema>()
         .filter()
         .catIdEqualTo(catId)
         .sortByRecordedAtDesc()
@@ -43,7 +43,7 @@ class LogLocalDataSource {
   ///
   /// 返回 [LogEntity]，如果找不到对应 ID 的记录则返回 null。
   Future<LogEntity?> getLogById(int id) async {
-    final model = await _isar.logSchemas.filter().idEqualTo(id).findFirst();
+    final model = await _isar.collection<LogSchema>().filter().idEqualTo(id).findFirst();
     return model != null ? _toEntity(model) : null;
   }
 
@@ -53,7 +53,7 @@ class LogLocalDataSource {
   /// [offset] 偏移量，用于分页，默认为 0。
   /// 结果按记录时间降序排列。
   Future<List<LogEntity>> getAllLogs({int? limit, int? offset}) async {
-    final models = await _isar.logSchemas
+    final models = await _isar.collection<LogSchema>()
         .where()
         .sortByRecordedAtDesc()
         .offset(offset ?? 0)
@@ -68,9 +68,9 @@ class LogLocalDataSource {
   /// 为 null 时统计所有日志数量。
   Future<int> getLogCount({int? catId}) async {
     if (catId != null) {
-      return await _isar.logSchemas.filter().catIdEqualTo(catId).count();
+      return await _isar.collection<LogSchema>().filter().catIdEqualTo(catId).count();
     }
-    return await _isar.logSchemas.count();
+    return await _isar.collection<LogSchema>().count();
   }
 
   // ==================== 写入操作 ====================
@@ -83,7 +83,7 @@ class LogLocalDataSource {
   Future<int> addLog(LogEntity log) async {
     final model = _toSchema(log, createdAt: DateTime.now());
     return await _isar.writeTxn(() async {
-      return await _isar.logSchemas.put(model);
+      return await _isar.collection<LogSchema>().put(model);
     });
   }
 
@@ -94,13 +94,13 @@ class LogLocalDataSource {
   /// 返回是否更新成功。
   Future<bool> updateLog(LogEntity log) async {
     final existing =
-        await _isar.logSchemas.filter().idEqualTo(log.id).findFirst();
+        await _isar.collection<LogSchema>().filter().idEqualTo(log.id).findFirst();
     if (existing == null) {
       throw LogDataSourceException('找不到 ID=${log.id} 的日志');
     }
     _updateSchemaFromEntity(existing, log);
     await _isar.writeTxn(() async {
-      await _isar.logSchemas.put(existing);
+      await _isar.collection<LogSchema>().put(existing);
     });
     return true;
   }
@@ -111,12 +111,12 @@ class LogLocalDataSource {
   /// 如果找不到对应记录，抛出 [LogDataSourceException]。
   /// 返回是否删除成功。
   Future<bool> deleteLog(int id) async {
-    final existing = await _isar.logSchemas.filter().idEqualTo(id).findFirst();
+    final existing = await _isar.collection<LogSchema>().filter().idEqualTo(id).findFirst();
     if (existing == null) {
       throw LogDataSourceException('找不到 ID=$id 的日志');
     }
     await _isar.writeTxn(() async {
-      await _isar.logSchemas.delete(existing.id);
+      await _isar.collection<LogSchema>().delete(existing.id);
     });
     return true;
   }
@@ -127,10 +127,10 @@ class LogLocalDataSource {
   /// 使用事务确保操作的原子性。
   Future<void> deleteLogsByCatId(int catId) async {
     final logs =
-        await _isar.logSchemas.filter().catIdEqualTo(catId).findAll();
+        await _isar.collection<LogSchema>().filter().catIdEqualTo(catId).findAll();
     await _isar.writeTxn(() async {
       for (final log in logs) {
-        await _isar.logSchemas.delete(log.id);
+        await _isar.collection<LogSchema>().delete(log.id);
       }
     });
   }

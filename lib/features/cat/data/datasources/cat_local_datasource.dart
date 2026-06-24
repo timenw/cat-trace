@@ -33,8 +33,8 @@ class CatLocalDataSource {
   /// 结果按最近观察时间降序排列。
   Future<List<CatEntity>> getAllCats({bool includeDeleted = false}) async {
     final models = includeDeleted
-        ? await _isar.catSchemas.where().sortByLastSeenAtDesc().findAll()
-        : await _isar.catSchemas
+        ? await _isar.collection<CatSchema>().where().sortByLastSeenAtDesc().findAll()
+        : await _isar.collection<CatSchema>()
             .filter()
             .isDeletedEqualTo(false)
             .sortByLastSeenAtDesc()
@@ -46,7 +46,7 @@ class CatLocalDataSource {
   ///
   /// 返回 [CatEntity]，如果找不到对应 ID 的记录则返回 null。
   Future<CatEntity?> getCatById(int id) async {
-    final model = await _isar.catSchemas.filter().idEqualTo(id).findFirst();
+    final model = await _isar.collection<CatSchema>().filter().idEqualTo(id).findFirst();
     return model != null ? _toEntity(model) : null;
   }
 
@@ -58,7 +58,7 @@ class CatLocalDataSource {
   Future<List<CatEntity>> searchCats(String query) async {
     if (query.trim().isEmpty) return getAllCats();
     final keyword = query.trim().toLowerCase();
-    final models = await _isar.catSchemas
+    final models = await _isar.collection<CatSchema>()
         .filter()
         .isDeletedEqualTo(false)
         .and()
@@ -78,8 +78,8 @@ class CatLocalDataSource {
   /// [includeDeleted] 为 true 时统计所有记录；
   /// 为 false 时仅统计未删除的记录。
   Future<int> getCatCount({bool includeDeleted = false}) async {
-    if (includeDeleted) return await _isar.catSchemas.count();
-    return await _isar.catSchemas.filter().isDeletedEqualTo(false).count();
+    if (includeDeleted) return await _isar.collection<CatSchema>().count();
+    return await _isar.collection<CatSchema>().filter().isDeletedEqualTo(false).count();
   }
 
   // ==================== 写入操作 ====================
@@ -93,7 +93,7 @@ class CatLocalDataSource {
     final now = DateTime.now();
     final model = _toSchema(cat, createdAt: now, updatedAt: now);
     return await _isar.writeTxn(() async {
-      return await _isar.catSchemas.put(model);
+      return await _isar.collection<CatSchema>().put(model);
     });
   }
 
@@ -104,14 +104,14 @@ class CatLocalDataSource {
   /// 自动更新 [updatedAt] 为当前时间。
   /// 返回是否更新成功。
   Future<bool> updateCat(CatEntity cat) async {
-    final existing = await _isar.catSchemas.filter().idEqualTo(cat.id).findFirst();
+    final existing = await _isar.collection<CatSchema>().filter().idEqualTo(cat.id).findFirst();
     if (existing == null) {
       throw CatDataSourceException('找不到 ID=${cat.id} 的猫咪');
     }
     _updateSchemaFromEntity(existing, cat);
     existing.updatedAt = DateTime.now();
     await _isar.writeTxn(() async {
-      await _isar.catSchemas.put(existing);
+      await _isar.collection<CatSchema>().put(existing);
     });
     return true;
   }
@@ -123,17 +123,17 @@ class CatLocalDataSource {
   /// 如果找不到对应记录，抛出 [CatDataSourceException]。
   /// 返回是否删除成功。
   Future<bool> deleteCat(int id, {bool permanent = false}) async {
-    final existing = await _isar.catSchemas.filter().idEqualTo(id).findFirst();
+    final existing = await _isar.collection<CatSchema>().filter().idEqualTo(id).findFirst();
     if (existing == null) {
       throw CatDataSourceException('找不到 ID=$id 的猫咪');
     }
     await _isar.writeTxn(() async {
       if (permanent) {
-        await _isar.catSchemas.delete(existing.id);
+        await _isar.collection<CatSchema>().delete(existing.id);
       } else {
         existing.isDeleted = true;
         existing.updatedAt = DateTime.now();
-        await _isar.catSchemas.put(existing);
+        await _isar.collection<CatSchema>().put(existing);
       }
     });
     return true;

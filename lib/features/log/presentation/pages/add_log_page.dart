@@ -138,7 +138,7 @@ class _AddLogPageState extends ConsumerState<AddLogPage> {
         ),
         const SizedBox(height: 8),
         SegmentedButton<LogType>(
-          segments: const [
+          segments: [
             ButtonSegment(
               value: LogType.feed,
               label: Text('投喂'),

@@ -30,10 +30,10 @@ class BackupService {
       await backupDir2.create(recursive: true);
 
       // 导出数据为 JSON
-      final cats = await isar.catSchemas.where().findAll();
-      final logs = await isar.logSchemas.where().findAll();
-      final photos = await isar.photoSchemas.where().findAll();
-      final achievements = await isar.achievementSchemas.where().findAll();
+      final cats = await isar.collection<CatSchema>().where().findAll();
+      final logs = await isar.collection<LogSchema>().where().findAll();
+      final photos = await isar.collection<PhotoSchema>().where().findAll();
+      final achievements = await isar.collection<AchievementSchema>().where().findAll();
 
       final backupData = {
         'version': 1,
@@ -109,10 +109,10 @@ class BackupService {
         // 恢复数据
         await isar.writeTxn(() async {
           // 清空现有数据
-          await isar.catSchemas.clear();
-          await isar.logSchemas.clear();
-          await isar.photoSchemas.clear();
-          await isar.achievementSchemas.clear();
+          await isar.collection<CatSchema>().clear();
+          await isar.collection<LogSchema>().clear();
+          await isar.collection<PhotoSchema>().clear();
+          await isar.collection<AchievementSchema>().clear();
 
           // 恢复猫咪
           final cats = (data['cats'] as List?) ?? [];
@@ -141,7 +141,7 @@ class BackupService {
               ..lastSeenAt = DateTime.fromMillisecondsSinceEpoch(catData['lastSeenAt'] ?? 0)
               ..createdAt = DateTime.fromMillisecondsSinceEpoch(catData['createdAt'] ?? 0)
               ..updatedAt = DateTime.fromMillisecondsSinceEpoch(catData['updatedAt'] ?? 0);
-            await isar.catSchemas.put(cat);
+            await isar.collection<CatSchema>().put(cat);
           }
         });
       }

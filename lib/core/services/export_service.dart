@@ -21,8 +21,8 @@ class ExportService {
       await exportDir.create(recursive: true);
 
       // 导出数据为 JSON
-      final cats = await isar.catSchemas.where().findAll();
-      final logs = await isar.logSchemas.where().findAll();
+      final cats = await isar.collection<CatSchema>().where().findAll();
+      final logs = await isar.collection<LogSchema>().where().findAll();
 
       final exportData = {
         'app': 'CatTrace',
@@ -74,10 +74,10 @@ class ExportService {
   /// 导出单只猫咪档案为 PDF（简化版，生成 HTML 后转 PDF）
   Future<String> exportCatProfile(int catId) async {
     try {
-      final cat = await isar.catSchemas.filter().idEqualTo(catId).findFirst();
+      final cat = await isar.collection<CatSchema>().filter().idEqualTo(catId).findFirst();
       if (cat == null) throw Exception('找不到猫咪');
 
-      final logs = await isar.logSchemas.filter().catIdEqualTo(catId).sortByRecordedAtDesc().findAll();
+      final logs = await isar.collection<LogSchema>().filter().catIdEqualTo(catId).sortByRecordedAtDesc().findAll();
 
       // 生成 HTML
       final html = _generateCatHtml(cat, logs);
