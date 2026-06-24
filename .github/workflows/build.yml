@@ -50,8 +50,14 @@ jobs:
         run: |
           PUB="${PUB_CACHE:-$HOME/.pub-cache}"
           DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
+          # Fix AndroidManifest.xml: remove package attr and lStar attr
           MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
-          if [ -n "$MF" ]; then sed -i 's/ package="[^"]*"//' "$MF"; fi
+          if [ -n "$MF" ]; then
+            sed -i 's/ package="[^"]*"//' "$MF"
+            sed -i 's/ android:attr\/lStar="[^"]*"//' "$MF"
+            sed -i '/android:attr\/lStar/d' "$MF"
+          fi
+          # Fix build.gradle: add namespace
           BG=$(find "$DIR" -name 'build.gradle' | head -1)
           if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
             sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
@@ -84,7 +90,11 @@ jobs:
           PUB="${PUB_CACHE:-$HOME/.pub-cache}"
           DIR=$(find "$PUB" -maxdepth 3 -type d -name 'isar_flutter_libs-*' | head -1)
           MF=$(find "$DIR" -path '*/AndroidManifest.xml' | head -1)
-          if [ -n "$MF" ]; then sed -i 's/ package="[^"]*"//' "$MF"; fi
+          if [ -n "$MF" ]; then
+            sed -i 's/ package="[^"]*"//' "$MF"
+            sed -i 's/ android:attr\/lStar="[^"]*"//' "$MF"
+            sed -i '/android:attr\/lStar/d' "$MF"
+          fi
           BG=$(find "$DIR" -name 'build.gradle' | head -1)
           if [ -n "$BG" ] && ! grep -q namespace "$BG"; then
             sed -i '/^android {/a\    namespace "com.cattrace.isar_flutter_libs"' "$BG"
