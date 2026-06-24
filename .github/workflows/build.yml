@@ -68,6 +68,10 @@ jobs:
             else
               sed -i '/^android {/a\    compileSdk 34' "$BF"
             fi
+            # Add aaptOptions to ignore missing resource references
+            if ! grep -q 'aaptOptions' "$BF"; then
+              sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
+            fi
           done
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -109,6 +113,10 @@ jobs:
               sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
             else
               sed -i '/^android {/a\    compileSdk 34' "$BF"
+            fi
+            # Add aaptOptions to ignore missing resource references
+            if ! grep -q 'aaptOptions' "$BF"; then
+              sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
             fi
           done
       - run: dart run build_runner build --delete-conflicting-outputs
