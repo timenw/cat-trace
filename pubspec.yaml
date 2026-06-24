@@ -66,11 +66,6 @@ dependencies:
   # 图标
   cupertino_icons: ^1.0.8
 
-dependency_overrides:
-  # Downgrade androidx.core to avoid lStar attr (requires compileSdk 35)
-  androidx.core:
-    version: 1.12.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
