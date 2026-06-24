@@ -18,7 +18,6 @@
 ///   validator: Validators.validateNickname,
 /// )
 /// ```
-library validators;
 
 /// 猫迹验证工具类
 ///

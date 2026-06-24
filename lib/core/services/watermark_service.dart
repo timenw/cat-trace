@@ -14,7 +14,6 @@
 ///   - `image` 包：图片处理
 ///   - `uuid` 包：生成唯一 ID
 ///   - `intl` 包：日期格式化
-library watermark_service;
 
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
@@ -111,7 +110,7 @@ class WatermarkService {
   }) async {
     try {
       // 解码图片
-      img.Image? image = img.decodeImage(imageBytes);
+      final image = img.decodeImage(imageBytes);
       if (image == null) return null;
 
       // 生成或使用自定义水印文本
@@ -202,7 +201,7 @@ class WatermarkService {
     String? customText,
   }) async {
     try {
-      img.Image? image = img.decodeImage(imageBytes);
+      final image = img.decodeImage(imageBytes);
       if (image == null) return null;
 
       final watermarkText = customText ?? generateWatermarkInfo().fullText;
@@ -285,7 +284,7 @@ class WatermarkService {
   /// 返回提取到的水印文本，如果提取失败返回 null。
   Future<String?> extractInvisibleWatermark(Uint8List imageBytes) async {
     try {
-      img.Image? image = img.decodeImage(imageBytes);
+      final image = img.decodeImage(imageBytes);
       if (image == null) return null;
 
       // 提取所有像素的 RGB 最低有效位

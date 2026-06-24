@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/cat_entity.dart';
 import '../widgets/tnr_badge.dart';
 

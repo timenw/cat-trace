@@ -39,7 +39,7 @@ class ExportService {
       // 复制照片
       final photosDir = Directory('$exportPath/photos');
       await photosDir.create(recursive: true);
-      for (final cat in cats) {
+      for (final _ in cats) {
         final catPhotosDir = Directory('${appDir.path}/photos');
         if (await catPhotosDir.exists()) {
           await for (final entity in catPhotosDir.list()) {
@@ -157,9 +157,9 @@ class ExportService {
     'catId': l.catId,
     'type': l.type.displayName,
     'recordedAt': l.recordedAt.toIso8601String(),
-    'feedType': l.feedType?.displayName,
-    'feedAmount': l.feedAmount?.name,
-    'healthStatus': l.healthStatus?.displayName,
+    'feedType': l.feedType.displayName,
+    'feedAmount': l.feedAmount.name,
+    'healthStatus': l.healthStatus.displayName,
     'spiritScore': l.spiritScore,
     'furScore': l.furScore,
     'hasInjury': l.hasInjury,

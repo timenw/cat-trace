@@ -11,7 +11,6 @@ import '../../../cat/presentation/providers/cat_providers.dart';
 import '../../../calendar/presentation/pages/calendar_page.dart';
 import '../../../achievement/presentation/pages/achievement_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
-import '../../domain/usecases/get_home_stats.dart';
 import '../../presentation/widgets/collection_stats.dart';
 import '../../presentation/widgets/home_search_bar.dart';
 import '../../presentation/widgets/quick_actions.dart';
@@ -37,7 +36,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
 
   /// 搜索关键词
-  String _searchQuery = '';
+  final _searchQuery = '';
 
   /// 各 Tab 页面
   final _pages = const [

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
@@ -49,8 +48,8 @@ class ImageService {
       img.Image? image = img.decodeImage(bytes);
       if (image == null) return null;
 
-      final originalWidth = image.width;
-      final originalHeight = image.height;
+      // final originalWidth = image.width;
+      // final originalHeight = image.height;
 
       // 压缩
       if (image.width > AppConstants.maxImageWidth ||

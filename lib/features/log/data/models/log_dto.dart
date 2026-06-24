@@ -80,7 +80,7 @@ class LogDto {
   final double? longitude;
 
   /// 构造函数
-  const LogDto({
+  LogDto({
     this.catId = 0,
     this.type = LogType.note,
     DateTime? recordedAt,

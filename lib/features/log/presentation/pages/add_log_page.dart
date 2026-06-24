@@ -396,31 +396,29 @@ class _AddLogPageState extends ConsumerState<AddLogPage> {
     setState(() => _isLoading = true);
 
     try {
-      // 构建 LogDto
-      final dto = LogDto(
-        catId: widget.catId,
-        type: _selectedType,
-        recordedAt: _recordedAt,
-        feedType: _selectedFeedType,
-        feedAmount: _selectedFeedAmount,
-        healthStatus: _selectedHealthStatus,
-        spiritScore: _selectedType == LogType.health ? _spiritScore : null,
-        furScore: _selectedType == LogType.health ? _furScore : null,
-        hasInjury: _selectedType == LogType.health ? _hasInjury : null,
-        injuryDescription: _selectedType == LogType.health && _hasInjury
-            ? _injuryDescController.text
-            : null,
-        weightEstimate: _selectedType == LogType.health &&
-                _weightController.text.isNotEmpty
-            ? double.tryParse(_weightController.text)
-            : null,
-        notes: _notesController.text.isNotEmpty ? _notesController.text : null,
-        locationHint: _locationController.text.isNotEmpty
-            ? _locationController.text
-            : null,
-      );
-
       // TODO: 通过 repository 保存日志
+      // final dto = LogDto(
+      //   catId: widget.catId,
+      //   type: _selectedType,
+      //   recordedAt: _recordedAt,
+      //   feedType: _selectedFeedType,
+      //   feedAmount: _selectedFeedAmount,
+      //   healthStatus: _selectedHealthStatus,
+      //   spiritScore: _selectedType == LogType.health ? _spiritScore : null,
+      //   furScore: _selectedType == LogType.health ? _furScore : null,
+      //   hasInjury: _selectedType == LogType.health ? _hasInjury : null,
+      //   injuryDescription: _selectedType == LogType.health && _hasInjury
+      //       ? _injuryDescController.text
+      //       : null,
+      //   weightEstimate: _selectedType == LogType.health &&
+      //           _weightController.text.isNotEmpty
+      //       ? double.tryParse(_weightController.text)
+      //       : null,
+      //   notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+      //   locationHint: _locationController.text.isNotEmpty
+      //       ? _locationController.text
+      //       : null,
+      // );
       // final entity = dto.toEntity();
       // await ref.read(logRepositoryProvider.notifier).addLog(entity);
       await Future.delayed(const Duration(milliseconds: 500)); // 模拟保存

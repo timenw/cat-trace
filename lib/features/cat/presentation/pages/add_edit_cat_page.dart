@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/router/app_router.dart';
 import '../providers/cat_providers.dart';
 
 /// 添加/编辑猫咪页面
@@ -33,8 +32,8 @@ class _AddEditCatPageState extends ConsumerState<AddEditCatPage> {
   String _selectedColor = 'unknown';
   String _selectedGender = 'unknown';
   String _selectedTnrStatus = 'none';
-  DateTime _firstSeenAt = DateTime.now();
-  DateTime _lastSeenAt = DateTime.now();
+  // DateTime _firstSeenAt = DateTime.now();
+  // DateTime _lastSeenAt = DateTime.now();
 
   bool _isLoading = false;
   bool get _isEditMode => widget.catId != null;

@@ -14,7 +14,6 @@
 ///   // 打开相机
 /// }
 /// ```
-library permission_utils;
 
 import 'package:permission_handler/permission_handler.dart';
 

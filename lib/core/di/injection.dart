@@ -9,7 +9,6 @@
 ///   - Service（服务层）→ 可依赖 Repository 和其他 Service
 ///
 /// 使用方式：在 Widget 中通过 `ref.watch(provider)` 获取实例。
-library injection;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';

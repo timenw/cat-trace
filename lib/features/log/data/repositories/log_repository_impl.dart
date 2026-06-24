@@ -15,9 +15,9 @@ class LogRepositoryImpl {
         ..type = log.type
         ..recordedAt = log.recordedAt
         ..createdAt = DateTime.now()
-        ..feedType = log.feedType
-        ..feedAmount = log.feedAmount
-        ..healthStatus = log.healthStatus
+        ..feedType = log.feedType ?? FeedType.other
+        ..feedAmount = log.feedAmount ?? FeedAmount.medium
+        ..healthStatus = log.healthStatus ?? HealthStatus.good
         ..spiritScore = log.spiritScore
         ..furScore = log.furScore
         ..hasInjury = log.hasInjury

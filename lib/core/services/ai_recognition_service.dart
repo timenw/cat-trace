@@ -15,7 +15,6 @@
 /// 依赖：
 ///   - `tflite_flutter`（预留）
 ///   - `image` 包：图片预处理
-library ai_recognition_service;
 
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
@@ -130,16 +129,12 @@ class AiRecognitionService {
     }
 
     try {
-      // 解码并预处理图片
-      final image = img.decodeImage(imageBytes);
-      if (image == null) return null;
+      // 解码图片（占位实现）
+      // final image = img.decodeImage(imageBytes);
+      // if (image == null) return null;
 
-      // 调整尺寸为模型输入尺寸
-      final resized = img.copyResize(
-        image,
-        width: inputSize,
-        height: inputSize,
-      );
+      // 调整尺寸为模型输入尺寸（占位）
+      // final resized = img.copyResize(image, width: inputSize, height: inputSize);
 
       // TODO: 将图片转为模型输入张量并进行推理
       // final input = _imageToInputTensor(resized);

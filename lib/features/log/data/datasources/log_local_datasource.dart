@@ -170,9 +170,9 @@ class LogLocalDataSource {
       ..type = log.type
       ..recordedAt = log.recordedAt
       ..createdAt = createdAt ?? log.createdAt
-      ..feedType = log.feedType
-      ..feedAmount = log.feedAmount
-      ..healthStatus = log.healthStatus
+      ..feedType = log.feedType ?? FeedType.other
+      ..feedAmount = log.feedAmount ?? FeedAmount.medium
+      ..healthStatus = log.healthStatus ?? HealthStatus.good
       ..spiritScore = log.spiritScore
       ..furScore = log.furScore
       ..hasInjury = log.hasInjury
@@ -193,9 +193,9 @@ class LogLocalDataSource {
       ..catId = entity.catId
       ..type = entity.type
       ..recordedAt = entity.recordedAt
-      ..feedType = entity.feedType
-      ..feedAmount = entity.feedAmount
-      ..healthStatus = entity.healthStatus
+      ..feedType = entity.feedType ?? FeedType.other
+      ..feedAmount = entity.feedAmount ?? FeedAmount.medium
+      ..healthStatus = entity.healthStatus ?? HealthStatus.good
       ..spiritScore = entity.spiritScore
       ..furScore = entity.furScore
       ..hasInjury = entity.hasInjury

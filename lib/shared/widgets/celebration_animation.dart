@@ -341,19 +341,19 @@ class _RarityCelebrationState extends State<RarityCelebration>
   }
 
   /// 根据稀有度获取庆祝类型
-  CelebrationType get _celebrationType {
-    switch (widget.rarity) {
-      case Rarity.common:
-        return CelebrationType.paws;
-      case Rarity.uncommon:
-        return CelebrationType.stars;
-      case Rarity.rare:
-        return CelebrationType.stars;
-      case Rarity.epic:
-      case Rarity.legendary:
-        return CelebrationType.confetti;
-    }
-  }
+  // CelebrationType get _celebrationType {
+  //   switch (widget.rarity) {
+  //     case Rarity.common:
+  //       return CelebrationType.paws;
+  //     case Rarity.uncommon:
+  //       return CelebrationType.stars;
+  //     case Rarity.rare:
+  //       return CelebrationType.stars;
+  //     case Rarity.epic:
+  //     case Rarity.legendary:
+  //       return CelebrationType.confetti;
+  //   }
+  // }
 
   /// 根据稀有度获取背景颜色
   Color get _rarityColor => RarityBadge.getRarityColor(widget.rarity);
