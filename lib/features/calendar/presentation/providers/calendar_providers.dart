@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/database/isar_database.dart';
 import '../../domain/usecases/get_calendar_events.dart';
 import '../../../log/domain/repositories/log_repository.dart';
-import '../../../log/data/datasources/log_local_datasource.dart';
 import '../../../log/data/repositories/log_repository_impl.dart';
 
 part 'calendar_providers.g.dart';
@@ -15,12 +14,7 @@ part 'calendar_providers.g.dart';
 
 /// 日志仓库 Provider（日历页面复用日志数据）
 final logRepositoryProvider = Provider<LogRepository>((ref) {
-  final datasource = ref.watch(logLocalDataSourceProvider);
-  return LogRepositoryImpl(datasource);
-});
-
-final logLocalDataSourceProvider = Provider<LogLocalDataSource>((ref) {
-  return LogLocalDataSource(IsarDatabase.instance);
+  return LogRepositoryImpl(IsarDatabase.instance);
 });
 
 // ============================================================================

@@ -57,7 +57,7 @@ class CalendarPage extends ConsumerWidget {
                     Future.microtask(() {
                       if (context.mounted) {
                         Scrollable.ensureVisible(
-                          context.findRenderObject() as RenderBox,
+                          context,
                           duration: const Duration(milliseconds: 300),
                           alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
                         );

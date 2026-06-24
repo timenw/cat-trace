@@ -105,20 +105,18 @@ class GetCalendarEvents {
     int? catId,
   }) async {
     // 获取该日期范围内的日志
-    QueryBuilder<LogSchema> query;
-    if (catId != null) {
-      query = _isar.collection<LogSchema>()
-        .filter()
-        .catIdEqualTo(catId)
-        .recordedAtBetween(startDate, endDate)
-        .sortByRecordedAtDesc();
-    } else {
-      query = _isar.collection<LogSchema>()
-        .filter()
-        .recordedAtBetween(startDate, endDate)
-        .sortByRecordedAtDesc();
-    }
-    final logs = await query.findAll();
+    final logs = catId != null
+        ? await _isar.collection<LogSchema>()
+            .filter()
+            .catIdEqualTo(catId)
+            .recordedAtBetween(startDate, endDate)
+            .sortByRecordedAtDesc()
+            .findAll()
+        : await _isar.collection<LogSchema>()
+            .filter()
+            .recordedAtBetween(startDate, endDate)
+            .sortByRecordedAtDesc()
+            .findAll();
 
     return logs.map(CalendarEvent.fromSchema).toList();
   }
@@ -152,18 +150,16 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
-    QueryBuilder<LogSchema> query;
-    if (catId != null) {
-      query = _isar.collection<LogSchema>()
-        .filter()
-        .catIdEqualTo(catId)
-        .recordedAtBetween(startDate, endDate);
-    } else {
-      query = _isar.collection<LogSchema>()
-        .filter()
-        .recordedAtBetween(startDate, endDate);
-    }
-    final logs = await query.findAll();
+    final logs = catId != null
+        ? await _isar.collection<LogSchema>()
+            .filter()
+            .catIdEqualTo(catId)
+            .recordedAtBetween(startDate, endDate)
+            .findAll()
+        : await _isar.collection<LogSchema>()
+            .filter()
+            .recordedAtBetween(startDate, endDate)
+            .findAll();
 
     return logs
         .map((log) => '${log.recordedAt.year}-${log.recordedAt.month.toString().padLeft(2, '0')}-${log.recordedAt.day.toString().padLeft(2, '0')}')

@@ -1,3 +1,4 @@
+import 'package:isar/isar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -6,7 +7,6 @@ import '../../domain/usecases/get_achievements.dart';
 import '../../domain/usecases/unlock_achievement.dart';
 import '../../../../core/database/isar_database.dart';
 import '../../../../core/database/schemas/achievement_schema.dart';
-import '../../../../shared/models/result.dart';
 
 part 'achievement_providers.g.dart';
 
