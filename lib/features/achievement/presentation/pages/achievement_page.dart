@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../shared/widgets/empty_state.dart';
-import '../presentation/providers/achievement_providers.dart';
-import '../presentation/widgets/achievement_card.dart';
-import '../presentation/widgets/achievement_grid.dart';
+import '../../presentation/providers/achievement_providers.dart';
+import '../../presentation/widgets/achievement_card.dart';
+import '../../presentation/widgets/achievement_grid.dart';
 
 /// 成就页面
 ///

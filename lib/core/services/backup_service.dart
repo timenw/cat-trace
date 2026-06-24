@@ -7,10 +7,10 @@ import '../../features/cat/domain/enums/cat_breed.dart';
 import '../../features/cat/domain/enums/cat_color.dart';
 import '../../features/cat/domain/enums/tnr_status.dart';
 import '../../features/cat/domain/enums/rarity.dart';
-import '../../../core/database/schemas/cat_schema.dart';
-import '../../../core/database/schemas/log_schema.dart';
-import '../../../core/database/schemas/photo_schema.dart';
-import '../../../core/database/schemas/achievement_schema.dart';
+import '../database/schemas/cat_schema.dart';
+import '../database/schemas/log_schema.dart';
+import '../database/schemas/photo_schema.dart';
+import '../database/schemas/achievement_schema.dart';
 import 'image_service.dart';
 
 /// 备份服务 — 本地备份与恢复

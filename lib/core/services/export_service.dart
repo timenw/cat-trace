@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
-import '../../../core/database/schemas/cat_schema.dart';
-import '../../../core/database/schemas/log_schema.dart';
+import '../database/schemas/cat_schema.dart';
+import '../database/schemas/log_schema.dart';
 
 /// 导出服务 — 导出 PDF/Zip
 class ExportService {

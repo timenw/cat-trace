@@ -33,40 +33,45 @@ class AchievementDataProvider {
 
   /// 获取所有成就
   Future<List<AchievementEntity>> getAllAchievements() async {
-    final schemas = _isar.findAchievementSchemaAsync();
-    final results = await schemas.toList();
-    return results.map(_toEntity).toList();
+    final schemas = await _isar.collection<AchievementSchema>().where().findAll();
+    return schemas.map(_toEntity).toList();
   }
 
   /// 按分类获取成就
   Future<List<AchievementEntity>> getAchievementsByCategory(
       AchievementCategory category) async {
-    final schemas = _isar.whereAchievementSchema()
+    final schemas = await _isar.collection<AchievementSchema>()
+        .filter()
         .categoryEqualTo(category.name)
-        .findAllAsync();
-    final results = await schemas.toList();
-    return results.map(_toEntity).toList();
+        .findAll();
+    return schemas.map(_toEntity).toList();
   }
 
   /// 获取已解锁的成就
   Future<List<AchievementEntity>> getUnlockedAchievements() async {
-    final schemas = _isar.whereAchievementSchema()
+    final schemas = await _isar.collection<AchievementSchema>()
+        .filter()
         .isUnlockedEqualTo(true)
         .sortBySortOrder()
-        .findAllAsync();
-    final results = await schemas.toList();
-    return results.map(_toEntity).toList();
+        .findAll();
+    return schemas.map(_toEntity).toList();
   }
 
   /// 根据 achievementId 获取单个成就
   Future<AchievementEntity?> getAchievementById(String achievementId) async {
-    final schema = await _isar.findAchievementSchemaByAchievementId(achievementId);
+    final schema = await _isar.collection<AchievementSchema>()
+        .filter()
+        .achievementIdEqualTo(achievementId)
+        .findFirst();
     return schema == null ? null : _toEntity(schema);
   }
 
   /// 更新成就进度
   Future<void> updateAchievementProgress(String achievementId, int progress) async {
-    final schema = await _isar.findAchievementSchemaByAchievementId(achievementId);
+    final schema = await _isar.collection<AchievementSchema>()
+        .filter()
+        .achievementIdEqualTo(achievementId)
+        .findFirst();
     if (schema != null) {
       await _isar.writeTxn(() async {
         schema.progress = progress;
@@ -78,7 +83,10 @@ class AchievementDataProvider {
 
   /// 解锁成就
   Future<bool> unlockAchievement(String achievementId) async {
-    final schema = await _isar.findAchievementSchemaByAchievementId(achievementId);
+    final schema = await _isar.collection<AchievementSchema>()
+        .filter()
+        .achievementIdEqualTo(achievementId)
+        .findFirst();
     if (schema != null && !schema.isUnlocked) {
       await _isar.writeTxn(() async {
         schema.isUnlocked = true;

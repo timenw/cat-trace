@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/cat/domain/enums/rarity.dart';
+import '../../features/cat/domain/enums/rarity.dart';
 
 /// 稀有度徽章组件
 /// 展示猫咪的稀有度等级，支持多种样式

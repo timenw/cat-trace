@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/database/isar_database.dart';
+import '../../../../core/database/schemas/log_schema.dart' show LogSchema;
 import '../../../../features/log/domain/entities/log_entity.dart';
 import '../../../../features/log/domain/enums/log_type.dart';
 
@@ -66,6 +67,19 @@ class CalendarEvent {
       catName: null, // LogEntity 暂无 catName 字段，后续可扩展
     );
   }
+
+  /// 从 LogSchema 创建 CalendarEvent
+  factory CalendarEvent.fromSchema(LogSchema schema) {
+    return CalendarEvent(
+      id: schema.id,
+      date: schema.recordedAt,
+      logType: schema.type,
+      title: schema.type.displayName,
+      description: schema.notes,
+      catId: schema.catId,
+      catName: null,
+    );
+  }
 }
 
 // ============================================================================
@@ -91,18 +105,22 @@ class GetCalendarEvents {
     int? catId,
   }) async {
     // 获取该日期范围内的日志
-    final logs = catId != null
-        ? await _isar.whereLogSchema()
-            .catIdEqualTo(catId)
-            .recordedAtBetween(startDate, endDate)
-            .sortByRecordedAtDesc()
-            .findAll()
-        : await _isar.whereLogSchema()
-            .recordedAtBetween(startDate, endDate)
-            .sortByRecordedAtDesc()
-            .findAll();
+    QueryBuilder<LogSchema> query;
+    if (catId != null) {
+      query = _isar.collection<LogSchema>()
+        .filter()
+        .catIdEqualTo(catId)
+        .recordedAtBetween(startDate, endDate)
+        .sortByRecordedAtDesc();
+    } else {
+      query = _isar.collection<LogSchema>()
+        .filter()
+        .recordedAtBetween(startDate, endDate)
+        .sortByRecordedAtDesc();
+    }
+    final logs = await query.findAll();
 
-    return logs.map(CalendarEvent.fromLog).toList();
+    return logs.map(CalendarEvent.fromSchema).toList();
   }
 
   /// 获取某个月份的所有事件
@@ -134,14 +152,18 @@ class GetCalendarEvents {
     required DateTime endDate,
     int? catId,
   }) async {
-    final logs = catId != null
-        ? await _isar.whereLogSchema()
-            .catIdEqualTo(catId)
-            .recordedAtBetween(startDate, endDate)
-            .findAll()
-        : await _isar.whereLogSchema()
-            .recordedAtBetween(startDate, endDate)
-            .findAll();
+    QueryBuilder<LogSchema> query;
+    if (catId != null) {
+      query = _isar.collection<LogSchema>()
+        .filter()
+        .catIdEqualTo(catId)
+        .recordedAtBetween(startDate, endDate);
+    } else {
+      query = _isar.collection<LogSchema>()
+        .filter()
+        .recordedAtBetween(startDate, endDate);
+    }
+    final logs = await query.findAll();
 
     return logs
         .map((log) => '${log.recordedAt.year}-${log.recordedAt.month.toString().padLeft(2, '0')}-${log.recordedAt.day.toString().padLeft(2, '0')}')

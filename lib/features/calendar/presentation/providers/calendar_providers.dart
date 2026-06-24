@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/database/isar_database.dart';
-import '../domain/usecases/get_calendar_events.dart';
-import '../../log/domain/repositories/log_repository.dart';
-import '../../log/data/datasources/log_local_datasource.dart';
-import '../../log/data/repositories/log_repository_impl.dart';
+import '../../domain/usecases/get_calendar_events.dart';
+import '../../../log/domain/repositories/log_repository.dart';
+import '../../../log/data/datasources/log_local_datasource.dart';
+import '../../../log/data/repositories/log_repository_impl.dart';
 
 part 'calendar_providers.g.dart';
 

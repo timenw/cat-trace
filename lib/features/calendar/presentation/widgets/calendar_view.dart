@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../widgets/event_list.dart';
-import '../../log/domain/enums/log_type.dart';
+import './event_list.dart';
+import '../../../log/domain/enums/log_type.dart';
 
 /// 日历视图组件
 ///

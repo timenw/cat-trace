@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'rarity_badge.dart';
-import '../../../features/cat/domain/enums/rarity.dart';
+import '../../features/cat/domain/enums/rarity.dart';
 
 /// 庆祝动画组件
 /// 当用户收集到新猫咪时展示的庆祝动画效果
