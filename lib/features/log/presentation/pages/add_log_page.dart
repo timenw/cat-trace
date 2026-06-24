@@ -8,7 +8,6 @@ import '../../domain/entities/log_entity.dart';
 import '../../domain/enums/feed_type.dart';
 import '../../domain/enums/health_status.dart';
 import '../../domain/enums/log_type.dart';
-import '../../data/models/log_dto.dart';
 import '../widgets/feed_template.dart';
 import '../widgets/health_observations.dart';
 

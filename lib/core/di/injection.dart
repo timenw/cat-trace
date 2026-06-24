@@ -17,7 +17,6 @@ import '../database/isar_database.dart';
 import '../../features/cat/data/datasources/cat_local_datasource.dart';
 import '../../features/cat/domain/repositories/cat_repository.dart';
 import '../../features/cat/data/repositories/cat_repository_impl.dart';
-import '../../features/log/data/datasources/log_local_datasource.dart';
 import '../../features/log/data/repositories/log_repository_impl.dart';
 import '../services/image_service.dart';
 import '../services/notification_service.dart';

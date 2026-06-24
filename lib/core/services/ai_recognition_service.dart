@@ -17,7 +17,6 @@
 ///   - `image` 包：图片预处理
 
 import 'dart:typed_data';
-import 'package:image/image.dart' as img;
 
 /// 品种识别结果
 ///

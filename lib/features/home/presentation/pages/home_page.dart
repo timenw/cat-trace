@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/app_router.dart';
-import '../../../../shared/widgets/empty_state.dart';
 import '../../../cat/domain/entities/cat_entity.dart';
 import '../../../cat/presentation/pages/cat_list_page.dart';
 import '../../../cat/presentation/providers/cat_providers.dart';
@@ -36,7 +35,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
 
   /// 搜索关键词
-  final _searchQuery = '';
 
   /// 各 Tab 页面
   final _pages = const [

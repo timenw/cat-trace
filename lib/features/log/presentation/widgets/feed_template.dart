@@ -26,7 +26,7 @@ class FeedTemplate extends ConsumerStatefulWidget {
 class _FeedTemplateState extends ConsumerState<FeedTemplate> {
   final _notesController = TextEditingController();
 
-  static final _feedTypes = <String, dynamic>[
+  static final _feedTypes = <Map<String, dynamic>>[
     {'key': 'dryFood', 'label': '干粮', 'icon': '🍚', 'enum': FeedType.dryFood},
     {'key': 'wetFood', 'label': '湿粮', 'icon': '🥫', 'enum': FeedType.wetFood},
     {'key': 'treat', 'label': '零食', 'icon': '🍤', 'enum': FeedType.treat},
@@ -35,7 +35,7 @@ class _FeedTemplateState extends ConsumerState<FeedTemplate> {
     {'key': 'other', 'label': '其他', 'icon': '🍽️', 'enum': FeedType.other},
   ];
 
-  static final _feedAmounts = <String, dynamic>[
+  static final _feedAmounts = <Map<String, dynamic>>[
     {'key': 'small', 'label': '少量', 'desc': '约10-20g', 'enum': FeedAmount.small},
     {'key': 'medium', 'label': '适量', 'desc': '约30-50g', 'enum': FeedAmount.medium},
     {'key': 'large', 'label': '大量', 'desc': '约60g以上', 'enum': FeedAmount.large},

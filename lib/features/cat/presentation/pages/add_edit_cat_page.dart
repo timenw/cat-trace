@@ -32,8 +32,8 @@ class _AddEditCatPageState extends ConsumerState<AddEditCatPage> {
   String _selectedColor = 'unknown';
   String _selectedGender = 'unknown';
   String _selectedTnrStatus = 'none';
-  // DateTime _firstSeenAt = DateTime.now();
-  // DateTime _lastSeenAt = DateTime.now();
+  DateTime _firstSeenAt = DateTime.now();
+  DateTime _lastSeenAt = DateTime.now();
 
   bool _isLoading = false;
   bool get _isEditMode => widget.catId != null;

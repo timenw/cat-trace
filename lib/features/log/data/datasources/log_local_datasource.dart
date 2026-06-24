@@ -2,6 +2,8 @@ import 'package:isar/isar.dart';
 
 import '../../../../core/database/schemas/log_schema.dart';
 import '../../domain/entities/log_entity.dart';
+import '../../domain/enums/feed_type.dart';
+import '../../domain/enums/health_status.dart';
 
 /// 日志本地数据源
 ///
