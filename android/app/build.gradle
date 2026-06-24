@@ -54,14 +54,3 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
-
-// AGP 8.x requires namespace for all modules; inject for plugins that lack it
-subprojects { sub ->
-    sub.afterEvaluate {
-        if (it.hasProperty('android')) {
-            if (it.android.namespace == null) {
-                it.android.namespace = "com.cattrace.${sub.name.replace('-', '_')}"
-            }
-        }
-    }
-}
