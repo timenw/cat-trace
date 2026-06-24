@@ -14,4 +14,10 @@
         <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
 
+    <!-- Launch theme (referenced by AndroidManifest) -->
+    <style name="LaunchTheme" parent="Theme.CatTrace.Splash" />
+
+    <!-- Normal theme (referenced by AndroidManifest) -->
+    <style name="NormalTheme" parent="Theme.CatTrace" />
+
 </resources>
