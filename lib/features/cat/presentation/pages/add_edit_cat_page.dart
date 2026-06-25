@@ -1,8 +1,95 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../core/services/ai_recognition_service.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_strings.dart';
+import 'providers/cat_providers.dart';
+
+/// 添加猫咪入口页面
+/// 
+/// 提供两种方式添加：
+/// - 手动录入
+/// - 拍照识别
+class AddCatPage extends ConsumerWidget {
+  const AddCatPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('添加猫咪')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildOptionCard(
+              context,
+              icon: Icons.edit,
+              title: '手动录入',
+              subtitle: '手动填写猫咪信息',
+              onTap: () => context.push('/cats/add/manual'),
+            ),
+            const SizedBox(height: 16),
+            _buildOptionCard(
+              context,
+              icon: Icons.camera_alt,
+              title: '拍照识别',
+              subtitle: 'AI识别品种和特征',
+              onTap: () => context.push('/cats/add/recognize'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Icon(icon, size: 48, color: AppColors.primary),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    )),
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: TextStyle(
+                      color: AppColors.lightTextSecondary,
+                      fontSize: 14,
+                    )),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+import '../../../../core/services/ai_recognition_service.dart';
+import '../../../cat/data/models/cat_dto.dart';
 import '../providers/cat_providers.dart';
 
 /// 添加/编辑猫咪页面
