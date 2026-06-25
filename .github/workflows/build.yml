@@ -118,19 +118,23 @@ jobs:
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Ensure Android SDK Platform 34 is installed
+      - name: Install Android SDK Platform 34
         run: |
-          if [ ! -d "$ANDROID_HOME/platforms/android-34" ]; then
-            echo "Platform 34 not found, installing..."
-            # Try sdkmanager
-            for SM in "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-                       "$ANDROID_HOME/cmdline-tools/bin/sdkmanager"; do
-              if [ -f "$SM" ]; then
-                echo y | "$SM" "platforms;android-34" && break
-              fi
-            done
+          # Download cmdline-tools if not present
+          CMDLINE_TOOLS="$ANDROID_HOME/cmdline-tools/latest"
+          if [ ! -f "$CMDLINE_TOOLS/bin/sdkmanager" ]; then
+            echo "Downloading cmdline-tools..."
+            mkdir -p "$ANDROID_HOME/cmdline-tools"
+            curl -sL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdline-tools.zip
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-tmp
+            mv /tmp/cmdline-tools-tmp/cmdline-tools "$CMDLINE_TOOLS"
+            rm -rf /tmp/cmdline-tools-tmp /tmp/cmdline-tools.zip
           fi
-          ls -la "$ANDROID_HOME/platforms/" 2>/dev/null || echo "No platforms dir"
+          # Install platform 34
+          if [ -f "$CMDLINE_TOOLS/bin/sdkmanager" ]; then
+            echo "y" | "$CMDLINE_TOOLS/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+          fi
+          ls -la "$ANDROID_HOME/platforms/" 2>/dev/null
       - run: flutter build apk --release
       - name: Rename APK
         run: |
