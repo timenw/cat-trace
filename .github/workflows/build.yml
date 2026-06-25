@@ -64,26 +64,14 @@ jobs:
               fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 35/' "$BF"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 35' "$BF"
+              sed -i '/^android {/a\    compileSdk 34' "$BF"
             fi
             # Remove lStar references from all xml files in the package
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
-          # Also patch the AAR file if it contains lStar references
-          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' | head -1)
-          if [ -n "$AAR" ]; then
-            TEMP_DIR=$(mktemp -d)
-            unzip -o "$AAR" -d "$TEMP_DIR"
-            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
-            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
-            cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
-            cd - > /dev/null
-            rm -rf "$TEMP_DIR"
-            echo "Patched AAR: $AAR"
-          fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
@@ -121,38 +109,28 @@ jobs:
               fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 35/' "$BF"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 35' "$BF"
+              sed -i '/^android {/a\    compileSdk 34' "$BF"
             fi
             # Remove lStar references from all xml files in the package
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
-          # Also patch the AAR file if it contains lStar references
-          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' | head -1)
-          if [ -n "$AAR" ]; then
-            TEMP_DIR=$(mktemp -d)
-            unzip -o "$AAR" -d "$TEMP_DIR"
-            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
-            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
-            cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
-            cd - > /dev/null
-            rm -rf "$TEMP_DIR"
-            echo "Patched AAR: $AAR"
-          fi
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Install Android SDK Platform 35
+      - name: Ensure Android SDK Platform 34 is installed
         run: |
-          # Try various sdkmanager locations
-          for SM in "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
-                     "${ANDROID_HOME}/cmdline-tools/bin/sdkmanager" \
-                     "/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" \
-                     "/usr/local/lib/android/sdk/cmdline-tools/bin/sdkmanager"; do
-            if [ -f "$SM" ]; then
-              echo "y" | "$SM" "platforms;android-35" 2>/dev/null && break
-            fi
-          done || echo "sdkmanager not available, continuing anyway"
+          if [ ! -d "$ANDROID_HOME/platforms/android-34" ]; then
+            echo "Platform 34 not found, installing..."
+            # Try sdkmanager
+            for SM in "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+                       "$ANDROID_HOME/cmdline-tools/bin/sdkmanager"; do
+              if [ -f "$SM" ]; then
+                echo y | "$SM" "platforms;android-34" && break
+              fi
+            done
+          fi
+          ls -la "$ANDROID_HOME/platforms/" 2>/dev/null || echo "No platforms dir"
       - run: flutter build apk --release
       - name: Rename APK
         run: |
