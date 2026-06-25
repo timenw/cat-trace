@@ -64,14 +64,16 @@ jobs:
               fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 35/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 34' "$BF"
+              sed -i '/^android {/a\    compileSdk 35' "$BF"
             fi
             # Add aaptOptions to ignore missing resource references
             if ! grep -q 'aaptOptions' "$BF"; then
               sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
             fi
+            # Remove lStar references from all xml files in the package
+            find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
           done
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -110,14 +112,16 @@ jobs:
               fi
             fi
             if grep -q 'compileSdk'; then
-              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 34/' "$BF"
+              sed -i 's/compileSdk [= ]*[0-9]*/compileSdk 35/' "$BF"
             else
-              sed -i '/^android {/a\    compileSdk 34' "$BF"
+              sed -i '/^android {/a\    compileSdk 35' "$BF"
             fi
             # Add aaptOptions to ignore missing resource references
             if ! grep -q 'aaptOptions' "$BF"; then
               sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
             fi
+            # Remove lStar references from all xml files in the package
+            find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
           done
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build apk --release
