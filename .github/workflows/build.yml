@@ -75,11 +75,15 @@ jobs:
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
           AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
           if [ -n "$AAR" ]; then
-            AAR_RES="$AAR/res"
-            if [ -d "$AAR_RES" ]; then
-              rm -rf "$AAR_RES"
+            TEMP_DIR=$(mktemp -d)
+            unzip -qo "$AAR" -d "$TEMP_DIR"
+            if [ -d "$TEMP_DIR/res" ]; then
+              rm -rf "$TEMP_DIR/res"
+              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store"
+              cd - > /dev/null
               echo "Removed res/ from AAR: $AAR"
             fi
+            rm -rf "$TEMP_DIR"
           fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -129,11 +133,15 @@ jobs:
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
           AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
           if [ -n "$AAR" ]; then
-            AAR_RES="$AAR/res"
-            if [ -d "$AAR_RES" ]; then
-              rm -rf "$AAR_RES"
+            TEMP_DIR=$(mktemp -d)
+            unzip -qo "$AAR" -d "$TEMP_DIR"
+            if [ -d "$TEMP_DIR/res" ]; then
+              rm -rf "$TEMP_DIR/res"
+              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store"
+              cd - > /dev/null
               echo "Removed res/ from AAR: $AAR"
             fi
+            rm -rf "$TEMP_DIR"
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - name: Install Android SDK Platform 34
