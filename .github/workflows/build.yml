@@ -130,11 +130,13 @@ jobs:
             mv /tmp/cmdline-tools-tmp/cmdline-tools "$CMDLINE_TOOLS"
             rm -rf /tmp/cmdline-tools-tmp /tmp/cmdline-tools.zip
           fi
-          # Install platform 34
-          if [ -f "$CMDLINE_TOOLS/bin/sdkmanager" ]; then
-            echo "y" | "$CMDLINE_TOOLS/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
-          fi
-          ls -la "$ANDROID_HOME/platforms/" 2>/dev/null
+          # Accept licenses first
+          yes | "$CMDLINE_TOOLS/bin/sdkmanager" --licenses 2>/dev/null || true
+          # Install platform 34 and build-tools
+          "$CMDLINE_TOOLS/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0" 2>&1 || \
+            echo "sdkmanager install failed, continuing anyway"
+          echo "=== Installed platforms ==="
+          ls -la "$ANDROID_HOME/platforms/" 2>/dev/null || echo "No platforms dir"
       - run: flutter build apk --release
       - name: Rename APK
         run: |
