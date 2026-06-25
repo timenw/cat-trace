@@ -74,16 +74,23 @@ jobs:
           done
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
           AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          echo "Found AAR: $AAR"
           if [ -n "$AAR" ]; then
             TEMP_DIR=$(mktemp -d)
-            unzip -qo "$AAR" -d "$TEMP_DIR"
+            unzip -qo "$AAR" -d "$TEMP_DIR" 2>&1 || echo "unzip failed"
+            echo "Unzipped contents: $(ls $TEMP_DIR/)"
             if [ -d "$TEMP_DIR/res" ]; then
+              echo "Removing res/ from AAR"
               rm -rf "$TEMP_DIR/res"
-              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store"
+              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store" 2>&1 || echo "zip failed"
               cd - > /dev/null
               echo "Removed res/ from AAR: $AAR"
+            else
+              echo "No res/ found in extracted AAR"
             fi
             rm -rf "$TEMP_DIR"
+          else
+            echo "No AAR found in pub cache"
           fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -132,16 +139,23 @@ jobs:
           done
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
           AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          echo "Found AAR: $AAR"
           if [ -n "$AAR" ]; then
             TEMP_DIR=$(mktemp -d)
-            unzip -qo "$AAR" -d "$TEMP_DIR"
+            unzip -qo "$AAR" -d "$TEMP_DIR" 2>&1 || echo "unzip failed"
+            echo "Unzipped contents: $(ls $TEMP_DIR/)"
             if [ -d "$TEMP_DIR/res" ]; then
+              echo "Removing res/ from AAR"
               rm -rf "$TEMP_DIR/res"
-              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store"
+              cd "$TEMP_DIR" && zip -qr "$AAR" . -x "*.DS_Store" 2>&1 || echo "zip failed"
               cd - > /dev/null
               echo "Removed res/ from AAR: $AAR"
+            else
+              echo "No res/ found in extracted AAR"
             fi
             rm -rf "$TEMP_DIR"
+          else
+            echo "No AAR found in pub cache"
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - name: Install Android SDK Platform 34
