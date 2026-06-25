@@ -140,6 +140,18 @@ jobs:
             echo "Patched AAR: $AAR"
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Install Android SDK Platform 31 (for lStar attribute)
+        run: |
+          sdkmanager "platforms;android-31"
+          mkdir -p /usr/local/lib/android/sdk/licenses
+          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/lib/android/sdk/licenses/android-sdk-license
+      - name: Patch merged resources after build
+        run: |
+          MERGED=$(find build/isar_flutter_libs/intermediates/merged_res -name "values.xml" 2>/dev/null | head -1)
+          if [ -n "$MERGED" ]; then
+            sed -i '/lStar/d' "$MERGED"
+            echo "Patched merged values.xml: $MERGED"
+          fi
       - run: flutter build apk --release
       - name: Rename APK
         run: |
