@@ -72,6 +72,15 @@ jobs:
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
+          # Patch the AAR: remove res/ directory entirely to eliminate lStar references
+          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          if [ -n "$AAR" ]; then
+            AAR_RES="$AAR/res"
+            if [ -d "$AAR_RES" ]; then
+              rm -rf "$AAR_RES"
+              echo "Removed res/ from AAR: $AAR"
+            fi
+          fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
@@ -117,6 +126,15 @@ jobs:
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
+          # Patch the AAR: remove res/ directory entirely to eliminate lStar references
+          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          if [ -n "$AAR" ]; then
+            AAR_RES="$AAR/res"
+            if [ -d "$AAR_RES" ]; then
+              rm -rf "$AAR_RES"
+              echo "Removed res/ from AAR: $AAR"
+            fi
+          fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - name: Install Android SDK Platform 34
         run: |
