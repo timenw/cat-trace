@@ -78,6 +78,7 @@ jobs:
             TEMP_DIR=$(mktemp -d)
             unzip -o "$AAR" -d "$TEMP_DIR"
             find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
             cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
             cd - > /dev/null
             rm -rf "$TEMP_DIR"
@@ -134,24 +135,24 @@ jobs:
             TEMP_DIR=$(mktemp -d)
             unzip -o "$AAR" -d "$TEMP_DIR"
             find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
             cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
             cd - > /dev/null
             rm -rf "$TEMP_DIR"
             echo "Patched AAR: $AAR"
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
-      - name: Install Android SDK Platform 31 (for lStar attribute)
+      - name: Install Android SDK Platform 35
         run: |
-          sdkmanager "platforms;android-31"
-          mkdir -p /usr/local/lib/android/sdk/licenses
-          echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > /usr/local/lib/android/sdk/licenses/android-sdk-license
-      - name: Patch merged resources after build
-        run: |
-          MERGED=$(find build/isar_flutter_libs/intermediates/merged_res -name "values.xml" 2>/dev/null | head -1)
-          if [ -n "$MERGED" ]; then
-            sed -i '/lStar/d' "$MERGED"
-            echo "Patched merged values.xml: $MERGED"
-          fi
+          # Try various sdkmanager locations
+          for SM in "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
+                     "${ANDROID_HOME}/cmdline-tools/bin/sdkmanager" \
+                     "/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" \
+                     "/usr/local/lib/android/sdk/cmdline-tools/bin/sdkmanager"; do
+            if [ -f "$SM" ]; then
+              echo "y" | "$SM" "platforms;android-35" 2>/dev/null && break
+            fi
+          done || echo "sdkmanager not available, continuing anyway"
       - run: flutter build apk --release
       - name: Rename APK
         run: |
