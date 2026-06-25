@@ -73,7 +73,7 @@ jobs:
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
-          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          AAR=$(find "$PUB" -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
           echo "Found AAR: $AAR"
           if [ -n "$AAR" ]; then
             TEMP_DIR=$(mktemp -d)
@@ -91,6 +91,10 @@ jobs:
             rm -rf "$TEMP_DIR"
           else
             echo "No AAR found in pub cache"
+            # List what's in the isar directory
+            ISAR_DIR=$(find "$PUB" -maxdepth 4 -type d -name 'isar*' 2>/dev/null | head -5)
+            echo "Isar dirs: $ISAR_DIR"
+            find "$PUB" -name '*isar*' -type f 2>/dev/null | head -10
           fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
@@ -138,7 +142,7 @@ jobs:
             find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
           # Patch the AAR: remove res/ directory entirely to eliminate lStar references
-          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
+          AAR=$(find "$PUB" -name 'isar_flutter_libs-*.aar' 2>/dev/null | head -1)
           echo "Found AAR: $AAR"
           if [ -n "$AAR" ]; then
             TEMP_DIR=$(mktemp -d)
@@ -156,6 +160,10 @@ jobs:
             rm -rf "$TEMP_DIR"
           else
             echo "No AAR found in pub cache"
+            # List what's in the isar directory
+            ISAR_DIR=$(find "$PUB" -maxdepth 4 -type d -name 'isar*' 2>/dev/null | head -5)
+            echo "Isar dirs: $ISAR_DIR"
+            find "$PUB" -name '*isar*' -type f 2>/dev/null | head -10
           fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - name: Install Android SDK Platform 34
