@@ -68,13 +68,21 @@ jobs:
             else
               sed -i '/^android {/a\    compileSdk 35' "$BF"
             fi
-            # Add aaptOptions to ignore missing resource references
-            if ! grep -q 'aaptOptions' "$BF"; then
-              sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
-            fi
             # Remove lStar references from all xml files in the package
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
+          # Also patch the AAR file if it contains lStar references
+          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' | head -1)
+          if [ -n "$AAR" ]; then
+            TEMP_DIR=$(mktemp -d)
+            unzip -o "$AAR" -d "$TEMP_DIR"
+            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
+            cd - > /dev/null
+            rm -rf "$TEMP_DIR"
+            echo "Patched AAR: $AAR"
+          fi
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v4
         with:
@@ -93,9 +101,6 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
       - run: flutter pub get
-      - name: Install Android SDK Platform 31
-        run: |
-          echo "y" | $FLUTTER_ROOT/bin/sdkmanager "platforms;android-31"
       - run: dart run build_runner build --delete-conflicting-outputs
       - name: Patch isar_flutter_libs
         run: |
@@ -119,13 +124,21 @@ jobs:
             else
               sed -i '/^android {/a\    compileSdk 35' "$BF"
             fi
-            # Add aaptOptions to ignore missing resource references
-            if ! grep -q 'aaptOptions' "$BF"; then
-              sed -i '/^android {/a\    aaptOptions { ignoreAssetsPattern "*" }' "$BF"
-            fi
             # Remove lStar references from all xml files in the package
             find "$DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            find "$DIR" -name "*.xml" -exec sed -i '/attr\/lStar/d' {} +
           done
+          # Also patch the AAR file if it contains lStar references
+          AAR=$(find "$PUB" -maxdepth 5 -name 'isar_flutter_libs-*.aar' | head -1)
+          if [ -n "$AAR" ]; then
+            TEMP_DIR=$(mktemp -d)
+            unzip -o "$AAR" -d "$TEMP_DIR"
+            find "$TEMP_DIR" -name "*.xml" -exec sed -i '/lStar/d' {} +
+            cd "$TEMP_DIR" && zip -r "$AAR" . -x "*.DS_Store"
+            cd - > /dev/null
+            rm -rf "$TEMP_DIR"
+            echo "Patched AAR: $AAR"
+          fi
       - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build apk --release
       - name: Rename APK
