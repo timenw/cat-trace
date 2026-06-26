@@ -1,11 +1,11 @@
-name: miao_ni
-description: "猫匿 - 流浪猫记录与收集 App"
+name: cat_trace
+description: "猫迹 - 流浪猫记录与收集 App"
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
-  flutter: '>=3.24.0'
+  sdk: ^3.5.0
+  flutter: ^3.24.0
 
 dependencies:
   flutter:
